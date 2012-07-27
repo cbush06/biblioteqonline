@@ -1,0 +1,71 @@
+<!--
+ *********************************************************************************************************************************************************************************
+ * #######################
+ * #   FILE DESCRIPTOR   #
+ * #######################
+ * Application: BiblioteQ Online
+ * Package: WebContent
+ * File: 
+ * 
+ * #######################
+ * #   GNU DISCLAIMER    #
+ * ####################### 
+ * BiblioteQ Online is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version. BiblioteQ Online is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+ * 
+ * #######################
+ * #      Revision       #
+ * ####################### 
+ * Jun 3, 2012, Clinton Bush, 1.0.0,
+ *    New file.
+ * 
+ ********************************************************************************************************************************************************************************** 
+ *
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:a4j="http://richfaces.org/a4j"> 
+
+	<h:head></h:head> 
+	<body> 
+		<ui:composition>
+			<div class="subHeaderBox">
+				<div class="sectionLeft">
+					Summary Page Settings
+				</div>
+				<div class="sectionOther">
+					&nbsp;
+				</div>
+				<div class="sectionOther" style="text-align: right;">
+					<a4j:commandButton value="Save." actionListener="#{A_Settings_SummaryPage_Backing.save}" execute="@all" render="@all"/>
+				</div>
+			</div>
+			<div class="subNavBox">
+				<ui:include src="/admin/navigation/Admin_Settings_Sub_Navigation.xhtml" />
+			</div>
+			<div class="subContentBox" style="text-align: left;">
+				<!-- INFO PANELS -->
+				<h:outputText value="Info. Panels" styleClass="settingSection" />
+				<h:panelGrid columns="2" width="400" cellpadding="0" cellspacing="0" style="margin-bottom: 10px;" columnClasses="settingLeftColumn, settingRightColumn">
+					<h:outputText value="Show &quot;Items Out&quot; Panel" styleClass="settingLabel" />
+					<h:selectBooleanCheckbox value="#{A_Settings_SummaryPage_Backing.showItemsOut}" />
+					
+					<h:outputText value="Show &quot;Items Requested&quot; Panel" styleClass="settingLabel" />
+					<h:selectBooleanCheckbox value="#{A_Settings_SummaryPage_Backing.showItemsRequested}" />
+					
+					<h:outputText value="Show &quot;Items Overdue&quot; Panel" styleClass="settingLabel" />
+					<h:selectBooleanCheckbox value="#{A_Settings_SummaryPage_Backing.showItemsOverdue}" />
+					
+					<h:outputText value="Show &quot;Overdue Fees&quot; Panel" styleClass="settingLabel" />
+					<h:selectBooleanCheckbox value="#{A_Settings_SummaryPage_Backing.showOverdueFees}" />
+				</h:panelGrid>
+			</div>
+		</ui:composition>
+	</body> 
+</html>

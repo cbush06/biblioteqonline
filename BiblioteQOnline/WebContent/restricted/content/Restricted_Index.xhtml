@@ -1,0 +1,257 @@
+<!--
+ *********************************************************************************************************************************************************************************
+ * #######################
+ * #   FILE DESCRIPTOR   #
+ * #######################
+ * Application: BiblioteQ Online
+ * Package: WebContent/restricted
+ * File: Restricted_Index.xhtml
+ * 
+ * #######################
+ * #   GNU DISCLAIMER    #
+ * ####################### 
+ * BiblioteQ Online is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version. BiblioteQ Online is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+ * 
+ * #######################
+ * #       Purpose       #
+ * #######################
+ * This is page provides the content to the index (home) page of the restricted area of the site.
+ *
+ * #######################
+ * #      Revision       #
+ * ####################### 
+ * Apr 3, 2012, Clinton Bush, 1.0.0,
+ *    New file.
+ * 
+ ********************************************************************************************************************************************************************************** 
+ *
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+
+	<h:head></h:head> 
+	<h:body>
+		<ui:composition>
+			<style type="text/css">
+				.leftColumn
+				{
+					vertical-align: top;
+					text-align: center;
+					
+					padding-left: 40px;
+					
+					padding-top: 10px;
+				}
+				
+				.rightColumn
+				{
+					vertical-align: top;
+					
+					padding-left: 40px;
+					
+					padding-top: 10px;
+				}
+				
+				.summaryItemsPanel
+				{
+					width: 777px;
+				}
+				
+				.summaryItemsBody
+				{
+					padding: 0px;
+				}
+				
+				.summaryItemsTable
+				{
+					width: 755px;
+					height: 460px;
+					margin: 0;
+				}
+				
+				.sidePanels
+				{
+					width: 150px;
+					height: 120px;
+					
+					margin-bottom: 20px;
+					
+					background-color: #FFFFFF;
+				}
+				
+				.sidePanelsBody
+				{
+					font-family: Arial;
+					font-size: 48px;
+					font-weight: bold;
+					
+					margin-top: 10px;
+				}
+				
+				.sidePanelsBody2
+				{
+					font-family: Arial;
+					font-size: 42px;
+					font-weight: bold;
+					
+					margin-top: 15px;
+				}
+				
+				.summaryItemsRow
+				{
+					cursor: pointer;
+				}
+			</style>
+			<h:panelGroup layout="block" styleClass="welcomeMessage">
+				<h:outputText value="Welcome #{Page_Backing.currentUser.member.firstName} #{Page_Backing.currentUser.member.lastName}!"/>
+			</h:panelGroup>
+			<h:panelGrid columns="2" columnClasses="leftColumn, rightColumn">
+				<h:panelGroup layout="block">
+					<rich:tabPanel styleClass="summaryItemsPanel" bodyClass="summaryItemsBody" id="borrowedItemsPanel" activeItem="#{R_Index_Backing.activeTabName}">
+						<rich:tab name="borrowed">
+							<f:facet name="header">
+								<div style="display: block; padding-top: 4px;">
+									<h:outputText value="Borrowed (#{R_Index_Backing.loanedItemsCount})" />
+								</div>
+							</f:facet>
+							<rich:extendedDataTable value="#{R_Index_Backing.loanedItems}" var="loanItem" id="summaryItemsTable" selectionMode="single" styleClass="summaryItemsTable" selection="#{R_Index_Backing.borrowedSelection}" rowClass="summaryItemsRow">
+						        <a4j:ajax event="selectionchange" execute="@self" render="@self" 
+	                 				listener="#{R_Index_Backing.selectionListener}" />
+								<rich:column width="250px" style="text-align: left;">
+									<f:facet name="header">
+										<h:outputText value="Title" />
+									</f:facet>
+									<h:outputText value="#{loanItem.loanedItem.title}" />
+								</rich:column>
+								
+								<rich:column width="150px">
+									<f:facet name="header">
+										<h:outputText value="Author/Creator" />
+									</f:facet>
+									<h:outputText value="#{loanItem.loanedItem.creator}" />
+								</rich:column>
+								
+								<rich:column width="100px">
+									<f:facet name="header">
+										<h:outputText value="Type" />
+									</f:facet>
+									<h:outputText value="#{loanItem.loanedItem.type}" />
+								</rich:column>
+								
+								<rich:column width="100px">
+									<f:facet name="header">
+										<h:outputText value="Due Date" />
+									</f:facet>
+									<h:outputText value="#{loanItem.loan.dueDate}" />
+								</rich:column>
+								
+								<rich:column width="150px">
+									<f:facet name="header">
+										<h:outputText value="Days Remaining" />
+									</f:facet>
+									<h:outputText value="#{loanItem.daysRemaining}" style="#{(loanItem.daysRemaining > 0) ? '' : 'color: red;'}"/>
+								</rich:column>
+							</rich:extendedDataTable>
+							<div style="width: 100%; text-align: right; margin-top: 5px;">
+								<a4j:commandButton value="View Info.">
+									<a4j:ajax event="click" execute="@all,infoPanel" render="@all,infoPanel" listener="#{R_Index_Backing.viewInfoListener}" />
+								</a4j:commandButton>
+							</div>
+						</rich:tab>
+						
+						<rich:tab name="requested">
+							<f:facet name="header">
+								<div style="display: block; padding-top: 4px;">
+									<h:outputText value="Requested (#{R_Index_Backing.requestedItemsCount})" />
+								</div>
+							</f:facet>
+							<rich:extendedDataTable value="#{R_Index_Backing.requestedItems}" var="requestedItem" id="requestedItemsTable" selectionMode="single" styleClass="summaryItemsTable" selection="#{R_Index_Backing.requestedSelection}" rowClass="summaryItemsRow">
+						        <a4j:ajax event="selectionchange" execute="@self" render="@self" 
+	                 				listener="#{R_Index_Backing.selectionListener}" />
+								<rich:column width="250px" style="text-align: left;">
+									<f:facet name="header">
+										<h:outputText value="Title" />
+									</f:facet>
+									<h:outputText value="#{requestedItem.requestedItem.title}" />
+								</rich:column>
+								
+								<rich:column width="150px">
+									<f:facet name="header">
+										<h:outputText value="Author/Creator" />
+									</f:facet>
+									<h:outputText value="#{requestedItem.requestedItem.creator}" />
+								</rich:column>
+								
+								<rich:column width="100px">
+									<f:facet name="header">
+										<h:outputText value="Type" />
+									</f:facet>
+									<h:outputText value="#{requestedItem.requestedItem.type}" />
+								</rich:column>
+								
+								<rich:column width="100px">
+									<f:facet name="header">
+										<h:outputText value="Request Date" />
+									</f:facet>
+									<h:outputText value="#{requestedItem.request.requestDate}" />
+								</rich:column>
+								
+								<rich:column width="150px">
+									<f:facet name="header">
+										<h:outputText value="Age of Request" />
+									</f:facet>
+									<h:outputText value="#{requestedItem.ageInDays}" />
+								</rich:column>
+							</rich:extendedDataTable>
+							<div style="width: 100%; text-align: right; margin-top: 5px;">
+								<a4j:commandButton value="View Info.">
+									<a4j:ajax event="click" execute="@all,infoPanel" render="@all,infoPanel" listener="#{R_Index_Backing.viewInfoListener}" />
+								</a4j:commandButton>
+							</div>
+						</rich:tab>
+					</rich:tabPanel>
+				</h:panelGroup>
+				<h:panelGroup layout="block">
+					<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+						<rich:panel styleClass="sidePanels" bodyClass="sidePanelsBody" rendered="#{R_Index_Backing.itemsOutShown}">
+							<f:facet name="header">
+								<h:outputText value="Items Out" />
+							</f:facet>
+							<h:outputText value="#{R_Index_Backing.loanedItemsCount}" />
+						</rich:panel>
+						
+						<rich:panel styleClass="sidePanels" bodyClass="sidePanelsBody" rendered="#{R_Index_Backing.itemsRequestedShown}">
+							<f:facet name="header">
+								<h:outputText value="Items Requested" />
+							</f:facet>
+							<h:outputText value="#{R_Index_Backing.requestedItemsCount}" />
+						</rich:panel>
+						
+						<rich:panel styleClass="sidePanels" bodyClass="sidePanelsBody" rendered="#{R_Index_Backing.itemsOverdueShown}">
+							<f:facet name="header">
+								<h:outputText value="Items Overdue" />
+							</f:facet>
+							<h:outputText value="#{R_Index_Backing.overdueItemsCount}" />
+						</rich:panel>
+						
+						<rich:panel styleClass="sidePanels" bodyClass="sidePanelsBody2" rendered="#{R_Index_Backing.feesOwedShown}">
+							<f:facet name="header">
+								<h:outputText value="Fees Owed" />
+							</f:facet>
+							<h:outputText value="$#{R_Index_Backing.overdueFees}" />
+						</rich:panel>
+					</h:panelGrid>
+				</h:panelGroup>
+			</h:panelGrid>
+		</ui:composition>
+	</h:body> 
+</html>

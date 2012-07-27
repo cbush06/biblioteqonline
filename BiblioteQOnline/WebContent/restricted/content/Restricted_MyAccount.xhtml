@@ -1,0 +1,247 @@
+<!--
+ *********************************************************************************************************************************************************************************
+ * #######################
+ * #   FILE DESCRIPTOR   #
+ * #######################
+ * Application: BiblioteQ Online
+ * Package: WebContent
+ * File: Restricted_MyAccount.xhtml
+ * 
+ * #######################
+ * #   GNU DISCLAIMER    #
+ * ####################### 
+ * BiblioteQ Online is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version. BiblioteQ Online is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+ * 
+ * #######################
+ * #       Purpose       #
+ * #######################
+ * This page allows a user to edit their own information.
+ *
+ * #######################
+ * #      Revision       #
+ * ####################### 
+ * Jul 4, 2012, Clinton Bush, 1.0.0,
+ *    New file. 
+ * 
+ ********************************************************************************************************************************************************************************** 
+ *
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"> 
+
+<h:head></h:head> 
+<body>
+	<ui:composition>
+		<script type="text/javascript" src="../js/md5.js"></script>
+		<script type="text/javascript">
+		//<![CDATA[
+			function encryptPasswords()
+			{
+				if(document.getElementById("#{rich:clientId('radChangePassword')}:0").checked)
+				{
+					// Have RichFaces provide the full id to the 2 password boxes
+					var pass1 = "#{rich:clientId('txtPassword1')}";
+					var pass2 = "#{rich:clientId('txtPassword2')}";
+					
+					// Get the passwords
+					var encryptedPassword = document.getElementById(pass1).value;
+					var encryptedVerifyPassword = document.getElementById(pass2).value;
+
+					if((encryptedPassword.length > 0) && (encryptedVerifyPassword.length > 0))
+					{
+						// Salt them
+						encryptedPassword = encryptedPassword.length + ":" + encryptedPassword;
+						encryptedVerifyPassword = encryptedVerifyPassword.length + ":" + encryptedVerifyPassword;
+	
+						// Encrypt them
+						encryptedPassword = MD5(encryptedPassword);
+						encryptedVerifyPassword = MD5(encryptedVerifyPassword);
+	
+						// Set the password fields to the encrypted versions
+						document.getElementById(pass1).value = encryptedPassword;
+						document.getElementById(pass2).value = encryptedVerifyPassword;
+					}
+				}
+				return true;
+			}
+		//]]>
+		</script>
+		<style type="text/css">
+			.usersPanel
+			{
+				width: 500px;
+			}
+			
+			.usersPanelBody
+			{
+				width: 490px;
+				text-align: left;
+				padding: 10px 5px 0px 5px;
+			}
+		</style>
+		<div class="subHeaderBox">
+				<div class="sectionLeft">
+					My Account
+				</div>
+			</div>
+			<div class="subNavBox">
+				<ui:include src="/restricted/navigation/Restricted_MyAccount_Sub_Navigation.xhtml" />
+			</div>
+			<div class="subContentBox">
+				<rich:panel style="width: 500px;" styleClass="usersPanel" bodyClass="usersPanelBody">
+					<f:facet name="header">
+						<h:outputText value="My Account Information" />
+					</f:facet>
+					<a4j:outputPanel id="userEditorPanel" layout="block" ajaxRendered="true">
+						<rich:tabPanel id="userEditorTabPanel" switchType="client">
+							<rich:tab name="general" execute="userEditorTabPanel" render="userEditorTabPanel" limitRender="true">
+								<f:facet name="header">
+									<div style="display: block; padding-top: 4px;">
+										<h:outputText value="General" />
+									</div>
+								</f:facet>
+								<table width="100%">
+									<tr>
+										<td valign="middle"><h:outputText value="First Name" /></td>
+										<td valign="top"><h:inputText id="txtFirstName" value="#{R_MyAccount_Backing.currentUser.member.firstName}" /> </td>
+									</tr>
+									<tr>
+										<td valign="middle"><h:outputText value="Last Name" /></td>
+										<td valign="top"><h:inputText id="txtLastName" value="#{R_MyAccount_Backing.currentUser.member.lastName}" /></td>
+									</tr>
+									<tr>
+										<td valign="middle"><h:outputText value="Middle Initial" /></td>
+										<td valign="top"><h:inputText id="txtMiddleInitial" value="#{R_MyAccount_Backing.currentUser.member.middleInitial}" /></td>
+									</tr>
+									<tr>
+										<td valign="middle"><h:outputText value="Date of Birth" /></td>
+										<td valign="top"><rich:calendar id="calDob" popup="true" showApplyButton="false" value="#{R_MyAccount_Backing.currentUser.member.dobAsDate}"/></td>
+									</tr>
+									<tr>
+										<td valign="middle"><h:outputText value="Sex" /></td>
+										<td valign="top">
+											<h:selectOneListbox value="#{R_MyAccount_Backing.currentUser.member.sex}" size="1">
+												<f:selectItem itemLabel="Male" itemValue="Male"/>
+												<f:selectItem itemLabel="Female" itemValue="Female"/>
+											</h:selectOneListbox>
+										</td>
+									</tr>
+									<tr>
+										<td valign="middle"><h:outputText value="Street" /></td>
+										<td valign="top"><h:inputText id="txtStreet" value="#{R_MyAccount_Backing.currentUser.member.streetAddress}" /></td>
+									</tr>
+									<tr>
+										<td valign="middle"><h:outputText value="City" /></td>
+										<td valign="top"><h:inputText id="txtCity" value="#{R_MyAccount_Backing.currentUser.member.city}" /></td>
+									</tr>
+									<tr>
+										<td valign="middle"><h:outputText value="State" /></td>
+										<td valign="top">
+											<h:selectOneListbox id="ddlState" value="#{R_MyAccount_Backing.currentUser.member.state}" size="1">
+												<f:selectItem itemLabel="N/A" itemValue="N/A"/>
+												<f:selectItem itemLabel="AK" itemValue="AK"/><f:selectItem itemLabel="AL" itemValue="AL"/>
+												<f:selectItem itemLabel="AR" itemValue="AR"/><f:selectItem itemLabel="AZ" itemValue="AZ"/>
+												<f:selectItem itemLabel="CA" itemValue="CA"/><f:selectItem itemLabel="CO" itemValue="CO"/>
+												<f:selectItem itemLabel="CT" itemValue="CT"/><f:selectItem itemLabel="DE" itemValue="DE"/>
+												<f:selectItem itemLabel="FL" itemValue="FL"/><f:selectItem itemLabel="GA" itemValue="GA"/>
+												<f:selectItem itemLabel="HI" itemValue="HI"/><f:selectItem itemLabel="IA" itemValue="IA"/>
+												<f:selectItem itemLabel="ID" itemValue="ID"/><f:selectItem itemLabel="IL" itemValue="IL"/>
+												<f:selectItem itemLabel="IN" itemValue="IN"/><f:selectItem itemLabel="KS" itemValue="KS"/>
+												<f:selectItem itemLabel="KY" itemValue="KY"/><f:selectItem itemLabel="LA" itemValue="LA"/>
+												<f:selectItem itemLabel="MA" itemValue="MA"/><f:selectItem itemLabel="AK" itemValue="AK"/>
+												<f:selectItem itemLabel="MD" itemValue="MD"/><f:selectItem itemLabel="ME" itemValue="ME"/>
+												<f:selectItem itemLabel="MI" itemValue="MI"/><f:selectItem itemLabel="MN" itemValue="MN"/>
+												<f:selectItem itemLabel="MO" itemValue="MO"/><f:selectItem itemLabel="MS" itemValue="MS"/>
+												<f:selectItem itemLabel="MT" itemValue="MT"/><f:selectItem itemLabel="NC" itemValue="NC"/>
+												<f:selectItem itemLabel="ND" itemValue="ND"/><f:selectItem itemLabel="NE" itemValue="NE"/>
+												<f:selectItem itemLabel="NH" itemValue="NH"/><f:selectItem itemLabel="NJ" itemValue="NJ"/>
+												<f:selectItem itemLabel="NM" itemValue="NM"/><f:selectItem itemLabel="NV" itemValue="NV"/>
+												<f:selectItem itemLabel="NY" itemValue="NY"/><f:selectItem itemLabel="OH" itemValue="OH"/>
+												<f:selectItem itemLabel="OK" itemValue="OK"/><f:selectItem itemLabel="OR" itemValue="OR"/>
+												<f:selectItem itemLabel="PA" itemValue="PA"/><f:selectItem itemLabel="RI" itemValue="RI"/>
+												<f:selectItem itemLabel="SC" itemValue="SC"/><f:selectItem itemLabel="SD" itemValue="SD"/>
+												<f:selectItem itemLabel="TN" itemValue="TN"/><f:selectItem itemLabel="TX" itemValue="TX"/>
+												<f:selectItem itemLabel="UT" itemValue="UT"/><f:selectItem itemLabel="VA" itemValue="VA"/>
+												<f:selectItem itemLabel="VT" itemValue="VT"/><f:selectItem itemLabel="WA" itemValue="WA"/>
+												<f:selectItem itemLabel="WI" itemValue="WI"/><f:selectItem itemLabel="WV" itemValue="WV"/>
+												<f:selectItem itemLabel="WY" itemValue="WY"/>
+											</h:selectOneListbox>
+										</td>
+									</tr>
+									<tr>
+										<td valign="middle"><h:outputText value="ZIP" /></td>
+										<td valign="top">
+											<h:inputText id="txtZip" value="#{R_MyAccount_Backing.currentUser.member.zip}">
+												<f:validator validatorId="ZipValidator" />
+											</h:inputText>
+										</td>
+									</tr>
+									<tr>
+										<td valign="middle"><h:outputText value="Phone" /></td>
+										<td valign="top">
+											<h:inputText id="txtPhone" value="#{R_MyAccount_Backing.currentUser.member.telephone}">
+												<f:validator validatorId="PhoneValidator" />
+											</h:inputText>
+										</td>
+									</tr>
+									<tr>
+										<td valign="middle"><h:outputText value="E-mail" /></td>
+										<td valign="top"><h:inputText id="txtEmail" value="#{R_MyAccount_Backing.currentUser.member.email}" /></td>
+									</tr>
+								</table>
+							</rich:tab>
+							<rich:tab name="security" execute="userEditorTabPanel" render="userEditorTabPanel" limitRender="true">
+								<f:facet name="header">
+									<div style="display: block; padding-top: 4px;">
+										<h:outputText value="Security" />
+									</div>
+								</f:facet>
+								<table width="100%">
+									<tr>
+										<td valign="middle"><h:outputText value="User Name" /></td>
+										<td valign="top"><h:inputText id="txtUserName" value="#{R_MyAccount_Backing.currentUser.userName}" /> </td>
+									</tr>
+									<tr>
+										<td valign="middle"><h:outputText value="Change Password" /></td>
+										<td valign="top">
+											<h:selectOneRadio id="radChangePassword" value="#{R_MyAccount_Backing.changePassword}">
+												<a4j:ajax event="change" execute="userEditorTabPanel" render="userEditorTabPanel" limitRender="true"/>
+												<f:selectItem itemLabel="Yes" itemValue="#{true}"/>
+												<f:selectItem itemLabel="No" itemValue="#{false}"/>
+											</h:selectOneRadio>
+										</td>
+									</tr>
+									<tr>
+										<td valign="middle" align="right"><h:outputText id="lblPassword1" value="New Password" style="color:#{(R_MyAccount_Backing.changePassword)?'#000000':'silver'}"/></td>
+										<td valign="top"><h:inputSecret id="txtPassword1" value="#{R_MyAccount_Backing.password1}" disabled="#{!R_MyAccount_Backing.changePassword}" /></td>
+									</tr>
+									<tr>
+										<td valign="middle" align="right"><h:outputText id="lblPassword2" value="Verify Password"  style="color:#{(R_MyAccount_Backing.changePassword)?'#000000':'silver'}"/></td>
+										<td valign="top"><h:inputSecret id="txtPassword2" value="#{R_MyAccount_Backing.password2}" disabled="#{!R_MyAccount_Backing.changePassword}" /></td>
+									</tr>
+								</table>
+							</rich:tab>
+						</rich:tabPanel>
+						
+						<h:panelGrid columns="1" style="margin-left: auto; margin-right: auto;">
+							<h:panelGroup>
+								<a4j:commandButton type="button" value="Save" onclick="encryptPasswords()">
+									<a4j:ajax event="click" execute="@all" render="@all" listener="#{R_MyAccount_Backing.saveUserListener}" />
+								</a4j:commandButton>
+							</h:panelGroup>
+						</h:panelGrid>
+					</a4j:outputPanel>
+				</rich:panel>
+			</div>
+	</ui:composition>
+</body> 
+</html>

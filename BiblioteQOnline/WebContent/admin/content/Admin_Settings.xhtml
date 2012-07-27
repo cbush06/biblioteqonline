@@ -1,0 +1,87 @@
+<!--
+ *********************************************************************************************************************************************************************************
+ * #######################
+ * #   FILE DESCRIPTOR   #
+ * #######################
+ * Application: BiblioteQ Online
+ * Package: WebContent/admin
+ * File: Admin_Settings.xhtml
+ * 
+ * #######################
+ * #   GNU DISCLAIMER    #
+ * ####################### 
+ * BiblioteQ Online is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version. BiblioteQ Online is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+ * 
+ * #######################
+ * #       Purpose       #
+ * #######################
+ * This is page allows an admin to manage the system settings for BiblioteQOnline.
+ *
+ * #######################
+ * #      Revision       #
+ * ####################### 
+ * May 9, 2012, Clinton Bush, 1.0.0,
+ *    New file.
+ * 
+ ********************************************************************************************************************************************************************************** 
+ *
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+
+	<h:head></h:head> 
+	<h:body>
+		<ui:composition>
+			<div class="subHeaderBox">
+				<div class="sectionLeft">
+					System Settings
+				</div>
+				<div class="sectionOther">
+					&nbsp;
+				</div>
+				<div class="sectionOther" style="text-align: right;">
+					<a4j:commandButton value="Save." id="btnSave" actionListener="#{A_Settings_System_Backing.save}" execute="@all" render="@all"/>
+				</div>
+			</div>
+			<div class="subNavBox">
+				<ui:include src="/admin/navigation/Admin_Settings_Sub_Navigation.xhtml" />
+			</div>
+			<div class="subContentBox" style="text-align: left;">
+				<!-- SYSTEM STATUS -->
+				<h:outputText value="System Status" styleClass="settingSection" />
+				<h:panelGrid columns="2" width="400" cellpadding="0" cellspacing="0" style="margin-bottom: 10px;" columnClasses="settingLeftColumn, settingRightColumn">
+					<h:outputText value="System Enabled" styleClass="settingLabel" />
+					<h:selectBooleanCheckbox id="cbSystemEnabled" value="#{A_Settings_System_Backing.systemEnabled}"/>
+					
+					<h:outputText value="System Disabled Message" styleClass="settingLabel" />
+					<h:inputTextarea id="txtSystemDisabledMessage" value="#{A_Settings_System_Backing.systemDisabledMessage}" cols="40" rows="4" />
+				</h:panelGrid>
+				
+				<!-- ONLINE REQUESTS -->
+				<h:outputText value="Online Requests" styleClass="settingSection" />
+				<h:panelGrid columns="2" width="400" cellpadding="0" cellspacing="0" style="margin-bottom: 10px;" columnClasses="settingLeftColumn, settingRightColumn">
+					<h:outputText value="Allow Online Requests" styleClass="settingLabel" />
+					<h:selectBooleanCheckbox id="cbAllowOnlineRequests" value="#{A_Settings_System_Backing.allowOnlineRequests}" />
+					
+					<h:outputText value="Agreement Terms Message" styleClass="settingLabel" />
+					<h:inputTextarea id="txtAgreementTermsMessage" value="#{A_Settings_System_Backing.agreementTermsMessage}" cols="40" rows="4" />
+					
+					<h:outputText value="Agreement Checkbox Message" styleClass="settingLabel" />
+					<h:inputTextarea id="txtAgreementCheckboxMessage" value="#{A_Settings_System_Backing.agreementCheckboxMessage}" cols="40" rows="4" />
+					
+					<h:outputText value="Request Confirmation Message" styleClass="settingLabel" />
+					<h:inputTextarea id="txtRequestConfirmationMessage" value="#{A_Settings_System_Backing.requestConfirmationMessage}" cols="40" rows="4" />
+				</h:panelGrid>
+			</div>
+		</ui:composition>
+	</h:body> 
+</html>

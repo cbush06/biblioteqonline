@@ -1,0 +1,55 @@
+<!--
+ *********************************************************************************************************************************************************************************
+ * #######################
+ * #   FILE DESCRIPTOR   #
+ * #######################
+ * Application: BiblioteQ Online
+ * Package: WebContent/admin
+ * File: Restricted_Header.xhtml
+ * 
+ * #######################
+ * #   GNU DISCLAIMER    #
+ * ####################### 
+ * BiblioteQ Online is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version. BiblioteQ Online is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+ * 
+ * #######################
+ * #       Purpose       #
+ * #######################
+ * This provides the page header to all pages in the restricted area of the site.
+ * 
+ * #######################
+ * #      Revision       #
+ * ####################### 
+ * Apr 3, 2012, Clinton Bush, 1.0.0,
+ *    New file.
+ * 
+ ********************************************************************************************************************************************************************************** 
+ *
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:a4j="http://richfaces.org/a4j"> 
+
+	<h:head></h:head> 
+	<h:body> 
+		<ui:composition>
+				<div id="header_logo"></div>
+				<div id="header_search">
+					<a4j:outputPanel id="searchPanel" layout="inline">
+						<h:inputText size="20" id="txtHeaderSearch" style="font-family: Arial; font-size:12pt; height: 25px; width: 300px; padding-left: 10px;" value="#{Search_Backing.simpleSearchQuery}"/>
+						<h:selectOneMenu id="ddlSearchType" value="#{Search_Backing.searchType}" style="font-family: Arial; font-size:12pt; height: 29px; margin-left: 10px; padding-left: 4px;">
+							<f:selectItems value="#{Search_Backing.searchTypeOptions}"/>
+						</h:selectOneMenu>
+						<h:commandButton action="#{Search_Backing.gotoRestrictedSearchResults}" value="Submit" style="font-family: Arial; font-size: 12pt; height: 28px; background-image: url('../imgs/search24.png'); background-position: 10% 50%; background-repeat: no-repeat; padding-left: 30px; padding-top: 4px; padding-bottom: 4px; margin-left: 4px; cursor: pointer;" />
+					</a4j:outputPanel>
+				</div>
+		</ui:composition>
+	</h:body> 
+</html>

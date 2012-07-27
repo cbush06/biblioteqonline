@@ -1,0 +1,384 @@
+<!--
+ *********************************************************************************************************************************************************************************
+ * #######################
+ * #   FILE DESCRIPTOR   #
+ * #######################
+ * Application: BiblioteQ Online
+ * Package: WebContent/admin/content
+ * File: Admin_ManageUsers.xhtml
+ * 
+ * #######################
+ * #   GNU DISCLAIMER    #
+ * ####################### 
+ * BiblioteQ Online is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version. BiblioteQ Online is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+ * 
+ * #######################
+ * #       Purpose       #
+ * #######################
+ * This is page allows an admin to manage the users of the BiblioteQOnline system.
+ *
+ * #######################
+ * #      Revision       #
+ * ####################### 
+ * May 9, 2012, Clinton Bush, 1.0.0,
+ *    New file.
+ * 
+ ********************************************************************************************************************************************************************************** 
+ *
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+
+	<h:head></h:head> 
+	<h:body>
+		<ui:composition>
+			<script type="text/javascript" src="../js/md5.js"></script>
+			<script type="text/javascript">
+			//<![CDATA[
+			function encryptPasswords()
+			{
+				if(document.getElementById("#{rich:clientId('radChangePassword')}:0").checked)
+				{
+					// Have RichFaces provide the full id to the 2 password boxes
+					var pass1 = "#{rich:clientId('txtPassword1')}";
+					var pass2 = "#{rich:clientId('txtPassword2')}";
+					
+					// Get the passwords
+					var encryptedPassword = document.getElementById(pass1).value;
+					var encryptedVerifyPassword = document.getElementById(pass2).value;
+
+					if((encryptedPassword.length > 0) && (encryptedVerifyPassword.length > 0))
+					{
+						// Salt them
+						encryptedPassword = encryptedPassword.length + ":" + encryptedPassword;
+						encryptedVerifyPassword = encryptedVerifyPassword.length + ":" + encryptedVerifyPassword;
+	
+						// Encrypt them
+						encryptedPassword = MD5(encryptedPassword);
+						encryptedVerifyPassword = MD5(encryptedVerifyPassword);
+	
+						// Set the password fields to the encrypted versions
+						document.getElementById(pass1).value = encryptedPassword;
+						document.getElementById(pass2).value = encryptedVerifyPassword;
+					}
+				}
+				return true;
+			}
+		//]]>
+			</script>
+			<style type="text/css">
+				.usersPanel
+				{
+					width: 770px;
+				}
+				
+				.usersPanelBody
+				{
+					width: 100%;
+					text-align: center;
+					padding: 10px 0 5px 5px;
+				}
+				
+				.usersPanelTable
+				{
+					width: 755px;
+					height: 460px;
+					margin: 0;
+				}
+				
+				.usersRow
+				{
+					cursor: pointer;
+				}
+				
+				.col1
+				{
+					text-align: right;
+				}
+				
+				.col2
+				{
+					text-align: left;
+				}
+			</style>
+			<div class="subHeaderBox">
+				<div class="sectionLeft">
+					Manage Users
+				</div>
+			</div>
+			<div class="subNavBox">
+				<ui:include src="/admin/navigation/Admin_ManageUsers_Sub_Navigation.xhtml" />
+			</div>
+			<div class="subContentBox">
+				<rich:panel styleClass="usersPanel" bodyClass="usersPanelBody">
+					<f:facet name="header">
+						<h:outputText value="Online Users" />
+					</f:facet>
+					<h:panelGroup display="block">
+						<rich:extendedDataTable var="user" value="#{A_ManageUsers_Backing.users}" selection="#{A_ManageUsers_Backing.usersSelection}" id="usersTable" selectionMode="single" styleClass="usersPanelTable" rowClass="usersRow">
+					        <a4j:ajax event="selectionchange" execute="@self" render="@self" 
+		               				listener="#{A_ManageUsers_Backing.selectionListener}" />
+							<rich:column width="140px" style="text-align: left;">
+								<f:facet name="header">
+									<h:outputText value="Last Name" />
+								</f:facet>
+								<h:outputText value="#{user.member.lastName}" />
+							</rich:column>
+							
+							<rich:column width="140px">
+								<f:facet name="header">
+									<h:outputText value="First Name" />
+								</f:facet>
+								<h:outputText value="#{user.member.firstName}" />
+							</rich:column>
+							
+							<rich:column width="98px">
+								<f:facet name="header">
+									<h:outputText value="Middle Initial" />
+								</f:facet>
+								<h:outputText value="#{user.member.middleInitial}" />
+							</rich:column>
+							
+							<rich:column width="100px">
+								<f:facet name="header">
+									<h:outputText value="Date of Birth" />
+								</f:facet>
+								<h:outputText value="#{user.member.dob}" />
+							</rich:column>
+							
+							<rich:column width="60px">
+								<f:facet name="header">
+									<h:outputText value="Sex" />
+								</f:facet>
+								<h:outputText value="#{user.member.sex}" />
+							</rich:column>
+							
+							<rich:column width="130px">
+								<f:facet name="header">
+									<h:outputText value="Username" />
+								</f:facet>
+								<h:outputText value="#{user.userName}" />
+							</rich:column>
+							
+							<rich:column width="80px">
+								<f:facet name="header">
+									<h:outputText value="Is Active" />
+								</f:facet>
+								<h:outputText value="#{(user.active)?'Y':'N'}"/>
+							</rich:column>
+						</rich:extendedDataTable>
+						<div style="width: 755px; text-align: right; margin-top: 5px;">
+							<a4j:commandButton value="View User">
+								<a4j:ajax event="click" execute="@all" render="@all" listener="#{A_ManageUsers_Backing.viewUserListener}" />
+							</a4j:commandButton>
+						</div>
+					</h:panelGroup>
+				</rich:panel>
+			</div>
+			
+			<a4j:outputPanel id="userEditorPanel" layout="block" ajaxRendered="true">
+				<rich:popupPanel id="userEditor" rendered="#{A_ManageUsers_Backing.editorShown}" show="true" modal="true" moveable="true" autosized="true" domElementAttachment="form" zindex="1000" width="500">
+					<f:facet name="header">
+						<h:panelGroup>
+							<h:outputText value="User Editor" />
+						</h:panelGroup>
+					</f:facet>
+					<rich:tabPanel id="userEditorTabPanel" switchType="client">
+						<rich:tab name="general" execute="userEditorTabPanel" render="userEditorTabPanel" limitRender="true">
+							<f:facet name="header">
+								<div style="display: block; padding-top: 4px;">
+									<h:outputText value="General" />
+								</div>
+							</f:facet>
+							<table width="100%">
+								<tr>
+									<td valign="middle"><h:outputText value="First Name" /></td>
+									<td valign="top"><h:inputText id="txtFirstName" value="#{A_ManageUsers_Backing.currentlySelectedUser.member.firstName}" /> </td>
+								</tr>
+								<tr>
+									<td valign="middle"><h:outputText value="Last Name" /></td>
+									<td valign="top"><h:inputText id="txtLastName" value="#{A_ManageUsers_Backing.currentlySelectedUser.member.lastName}" /></td>
+								</tr>
+								<tr>
+									<td valign="middle"><h:outputText value="Middle Initial" /></td>
+									<td valign="top"><h:inputText id="txtMiddleInitial" value="#{A_ManageUsers_Backing.currentlySelectedUser.member.middleInitial}" /></td>
+								</tr>
+								<tr>
+									<td valign="middle"><h:outputText value="Date of Birth" /></td>
+									<td valign="top"><rich:calendar id="calDob" popup="true" showApplyButton="false" value="#{A_ManageUsers_Backing.currentlySelectedUser.member.dobAsDate}"/></td>
+								</tr>
+								<tr>
+									<td valign="middle"><h:outputText value="Sex" /></td>
+									<td valign="top">
+										<h:selectOneListbox value="#{A_ManageUsers_Backing.currentlySelectedUser.member.sex}" size="1">
+											<f:selectItem itemLabel="Male" itemValue="Male"/>
+											<f:selectItem itemLabel="Female" itemValue="Female"/>
+										</h:selectOneListbox>
+									</td>
+								</tr>
+								<tr>
+									<td valign="middle"><h:outputText value="Street" /></td>
+									<td valign="top"><h:inputText id="txtStreet" value="#{A_ManageUsers_Backing.currentlySelectedUser.member.streetAddress}" /></td>
+								</tr>
+								<tr>
+									<td valign="middle"><h:outputText value="City" /></td>
+									<td valign="top"><h:inputText id="txtCity" value="#{A_ManageUsers_Backing.currentlySelectedUser.member.city}" /></td>
+								</tr>
+								<tr>
+									<td valign="middle"><h:outputText value="State" /></td>
+									<td valign="top">
+										<h:selectOneListbox id="ddlState" value="#{A_ManageUsers_Backing.currentlySelectedUser.member.state}" size="1">
+											<f:selectItem itemLabel="N/A" itemValue="N/A"/>
+											<f:selectItem itemLabel="AK" itemValue="AK"/><f:selectItem itemLabel="AL" itemValue="AL"/>
+											<f:selectItem itemLabel="AR" itemValue="AR"/><f:selectItem itemLabel="AZ" itemValue="AZ"/>
+											<f:selectItem itemLabel="CA" itemValue="CA"/><f:selectItem itemLabel="CO" itemValue="CO"/>
+											<f:selectItem itemLabel="CT" itemValue="CT"/><f:selectItem itemLabel="DE" itemValue="DE"/>
+											<f:selectItem itemLabel="FL" itemValue="FL"/><f:selectItem itemLabel="GA" itemValue="GA"/>
+											<f:selectItem itemLabel="HI" itemValue="HI"/><f:selectItem itemLabel="IA" itemValue="IA"/>
+											<f:selectItem itemLabel="ID" itemValue="ID"/><f:selectItem itemLabel="IL" itemValue="IL"/>
+											<f:selectItem itemLabel="IN" itemValue="IN"/><f:selectItem itemLabel="KS" itemValue="KS"/>
+											<f:selectItem itemLabel="KY" itemValue="KY"/><f:selectItem itemLabel="LA" itemValue="LA"/>
+											<f:selectItem itemLabel="MA" itemValue="MA"/><f:selectItem itemLabel="AK" itemValue="AK"/>
+											<f:selectItem itemLabel="MD" itemValue="MD"/><f:selectItem itemLabel="ME" itemValue="ME"/>
+											<f:selectItem itemLabel="MI" itemValue="MI"/><f:selectItem itemLabel="MN" itemValue="MN"/>
+											<f:selectItem itemLabel="MO" itemValue="MO"/><f:selectItem itemLabel="MS" itemValue="MS"/>
+											<f:selectItem itemLabel="MT" itemValue="MT"/><f:selectItem itemLabel="NC" itemValue="NC"/>
+											<f:selectItem itemLabel="ND" itemValue="ND"/><f:selectItem itemLabel="NE" itemValue="NE"/>
+											<f:selectItem itemLabel="NH" itemValue="NH"/><f:selectItem itemLabel="NJ" itemValue="NJ"/>
+											<f:selectItem itemLabel="NM" itemValue="NM"/><f:selectItem itemLabel="NV" itemValue="NV"/>
+											<f:selectItem itemLabel="NY" itemValue="NY"/><f:selectItem itemLabel="OH" itemValue="OH"/>
+											<f:selectItem itemLabel="OK" itemValue="OK"/><f:selectItem itemLabel="OR" itemValue="OR"/>
+											<f:selectItem itemLabel="PA" itemValue="PA"/><f:selectItem itemLabel="RI" itemValue="RI"/>
+											<f:selectItem itemLabel="SC" itemValue="SC"/><f:selectItem itemLabel="SD" itemValue="SD"/>
+											<f:selectItem itemLabel="TN" itemValue="TN"/><f:selectItem itemLabel="TX" itemValue="TX"/>
+											<f:selectItem itemLabel="UT" itemValue="UT"/><f:selectItem itemLabel="VA" itemValue="VA"/>
+											<f:selectItem itemLabel="VT" itemValue="VT"/><f:selectItem itemLabel="WA" itemValue="WA"/>
+											<f:selectItem itemLabel="WI" itemValue="WI"/><f:selectItem itemLabel="WV" itemValue="WV"/>
+											<f:selectItem itemLabel="WY" itemValue="WY"/>
+										</h:selectOneListbox>
+									</td>
+								</tr>
+								<tr>
+									<td valign="middle"><h:outputText value="ZIP" /></td>
+									<td valign="top">
+										<h:inputText id="txtZip" value="#{A_ManageUsers_Backing.currentlySelectedUser.member.zip}">
+											<f:validator validatorId="ZipValidator" />
+										</h:inputText>
+									</td>
+								</tr>
+								<tr>
+									<td valign="middle"><h:outputText value="Phone" /></td>
+									<td valign="top">
+										<h:inputText id="txtPhone" value="#{A_ManageUsers_Backing.currentlySelectedUser.member.telephone}">
+											<f:validator validatorId="PhoneValidator" />
+										</h:inputText>
+									</td>
+								</tr>
+								<tr>
+									<td valign="middle"><h:outputText value="E-mail" /></td>
+									<td valign="top"><h:inputText id="txtEmail" value="#{A_ManageUsers_Backing.currentlySelectedUser.member.email}" /></td>
+								</tr>
+								<tr>
+									<td valign="middle"><h:outputText value="Expiration Date" /></td>
+									<td valign="top"><rich:calendar id="calExp" popup="true" showApplyButton="false" value="#{A_ManageUsers_Backing.currentlySelectedUser.member.expirationAsDate}"/></td>
+								</tr>
+								<tr>
+									<td valign="middle"><h:outputText value="Overdue Fees" /></td>
+									<td valign="top">
+										<h:inputText id="txtOverdueFees" value="#{A_ManageUsers_Backing.currentlySelectedUser.member.overdueFees}">
+											<f:converter converterId="FloatConverter"/>
+										</h:inputText>
+									</td>
+								</tr>
+								<tr>
+									<td valign="top"><h:outputText value="Comments" /></td>
+									<td valign="top"><h:inputTextarea id="txtComments" value="#{A_ManageUsers_Backing.currentlySelectedUser.member.comments}" cols="30" rows="4" /></td>
+								</tr>
+							</table>
+						</rich:tab>
+						<rich:tab name="security" execute="userEditorTabPanel" render="userEditorTabPanel" limitRender="true">
+							<f:facet name="header">
+								<div style="display: block; padding-top: 4px;">
+									<h:outputText value="Security" />
+								</div>
+							</f:facet>
+							<table width="100%">
+								<tr>
+									<td valign="middle"><h:outputText value="User Name" /></td>
+									<td valign="top"><h:inputText id="txtUserName" value="#{A_ManageUsers_Backing.currentlySelectedUser.userName}" /> </td>
+								</tr>
+								<tr>
+									<td valign="middle"><h:outputText value="Change Password" /></td>
+									<td valign="top">
+										<h:selectOneRadio id="radChangePassword" value="#{A_ManageUsers_Backing.changePassword}">
+											<a4j:ajax event="change" execute="userEditorTabPanel" render="userEditorTabPanel" limitRender="true"/>
+											<f:selectItem itemLabel="Yes" itemValue="#{true}"/>
+											<f:selectItem itemLabel="No" itemValue="#{false}"/>
+										</h:selectOneRadio>
+									</td>
+								</tr>
+								<tr>
+									<td valign="middle" align="right"><h:outputText id="lblPassword1" value="New Password" style="color:#{(A_ManageUsers_Backing.changePassword)?'#000000':'silver'}"/></td>
+									<td valign="top"><h:inputSecret id="txtPassword1" value="#{A_ManageUsers_Backing.password1}" disabled="#{!A_ManageUsers_Backing.changePassword}" /></td>
+								</tr>
+								<tr>
+									<td valign="middle" align="right"><h:outputText id="lblPassword2" value="Verify Password"  style="color:#{(A_ManageUsers_Backing.changePassword)?'#000000':'silver'}"/></td>
+									<td valign="top"><h:inputSecret id="txtPassword2" value="#{A_ManageUsers_Backing.password2}" disabled="#{!A_ManageUsers_Backing.changePassword}" /></td>
+								</tr>
+								<tr>
+									<td valign="middle"><h:outputText value="Account Status" /></td>
+									<td valign="top">
+										<h:selectOneRadio id="radAccountStatus" value="#{A_ManageUsers_Backing.currentlySelectedUser.active}">
+											<f:selectItem itemLabel="Enabled" itemValue="#{true}"/>
+											<f:selectItem itemLabel="Disabled" itemValue="#{false}"/>
+										</h:selectOneRadio>
+									</td>
+								</tr>
+							</table>
+						</rich:tab>
+						<rich:tab name="Site" execute="userEditorTabPanel" render="userEditorTabPanel" limitRender="true">
+							<f:facet name="header">
+								<div style="display: block; padding-top: 4px;">
+									<h:outputText value="Site" />
+								</div>
+							</f:facet>
+							<table width="100%">
+								<tr>
+									<td valign="middle"><h:outputText value="Class" /></td>
+									<td valign="top"><h:inputText id="txtClass" value="#{A_ManageUsers_Backing.currentlySelectedUser.member.memberClass}" /> </td>
+								</tr>
+								<tr>
+									<td valign="middle"><h:outputText value="General Registration #" /></td>
+									<td valign="top"><h:inputText id="txtGeneralRegistrationNumber" value="#{A_ManageUsers_Backing.currentlySelectedUser.member.generalRegistrationNumber}" /> </td>
+								</tr>
+							</table>
+						</rich:tab>
+					</rich:tabPanel>
+					
+					<h:panelGrid columns="2" columnClasses="col1, col2" style="margin-left: auto; margin-right: auto;">
+						<h:panelGroup>
+							<a4j:commandButton type="button" value="Save" onclick="encryptPasswords()">
+								<a4j:ajax event="click" execute="@all" render="@all" listener="#{A_ManageUsers_Backing.saveUserListener}" />
+							</a4j:commandButton>
+						</h:panelGroup>
+						
+						<h:panelGroup>
+							<a4j:commandButton type="button" value="Cancel">
+								<a4j:ajax event="click" execute="@self" render="@all" listener="#{A_ManageUsers_Backing.closeUserEditorListener}" />
+							</a4j:commandButton>
+						</h:panelGroup>
+					</h:panelGrid>
+				</rich:popupPanel>
+			</a4j:outputPanel>
+		</ui:composition>
+	</h:body> 
+</html>

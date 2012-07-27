@@ -1,0 +1,87 @@
+<!--
+ *********************************************************************************************************************************************************************************
+ * #######################
+ * #   FILE DESCRIPTOR   #
+ * #######################
+ * Application: BiblioteQ Online
+ * Package: WebContent
+ * File: Restricted_ItemDetails_Book.xhtml
+ * 
+ * #######################
+ * #   GNU DISCLAIMER    #
+ * ####################### 
+ * BiblioteQ Online is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version. BiblioteQ Online is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+ *
+ * #######################
+ * #       Purpose       #
+ * #######################
+ * This page provides extended details for Books. It is to be included in the Restricted_ItemDetails.xhtml page.
+ *
+ * #######################
+ * #      Revision       #
+ * ####################### 
+ * Jun 28, 2012, Clinton Bush, 1.0.0,
+ *    New file.
+ * 
+ ********************************************************************************************************************************************************************************** 
+ *
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"> 
+
+<h:head></h:head> 
+<body> 
+	<ui:composition>
+		<table cellspacing="5">
+			<tr>
+				<td colspan="2" valign="top" style="padding-bottom: 10px;">
+					<h:outputText value="#{R_ItemDetails_Backing.selectedItem.type} Details" styleClass="itemDetailsSubHeader"/>
+				</td>
+			</tr>
+			<tr>
+				<td valign="top"><h:outputText value="Edition" styleClass="itemDetailsLabel" /></td>
+				<td valign="top"><h:outputText value="#{R_ItemDetails_Backing.selectedItemBook.edition}" styleClass="itemDetailsData" escape="false" /></td>
+			</tr>
+			<tr>
+				<td valign="top"><h:outputText value="Quantity" styleClass="itemDetailsLabel" /></td>
+				<td valign="top"><h:outputText value="#{R_ItemDetails_Backing.selectedItemBook.quantity}" styleClass="itemDetailsData" escape="false" /></td>
+			</tr>
+			<tr>
+				<td valign="top"><h:outputText value="Publishing Location" styleClass="itemDetailsLabel" /></td>
+				<td valign="top"><h:outputText value="#{R_ItemDetails_Backing.selectedItemBook.publishPlaceForHtml}" styleClass="itemDetailsData" escape="false" /></td>
+			</tr>
+			<tr>
+				<td valign="top"><h:outputText value="Dewey Decimal Number" styleClass="itemDetailsLabel" /></td>
+				<td valign="top"><h:outputText value="#{R_ItemDetails_Backing.selectedItemBook.deweyNumber}" styleClass="itemDetailsData" escape="false" /></td>
+			</tr>
+			<tr>
+				<td valign="top"><h:outputText value="Binding" styleClass="itemDetailsLabel" /></td>
+				<td valign="top"><h:outputText value="#{R_ItemDetails_Backing.selectedItemBook.bindingType}" styleClass="itemDetailsData" escape="false" /></td>
+			</tr>
+			<tr>
+				<td valign="top"><h:outputText value="ISBN-10" styleClass="itemDetailsLabel" /></td>
+				<td valign="top"><h:outputText value="#{R_ItemDetails_Backing.selectedItemBook.isbn10}" styleClass="itemDetailsData" escape="false" /></td>
+			</tr>
+			<tr>
+				<td valign="top"><h:outputText value="ISBN-13" styleClass="itemDetailsLabel" /></td>
+				<td valign="top"><h:outputText value="#{R_ItemDetails_Backing.selectedItemBook.isbn13}" styleClass="itemDetailsData" escape="false" /></td>
+			</tr>
+			<tr>
+				<td valign="top"><h:outputText value="LC Control Number" styleClass="itemDetailsLabel" /></td>
+				<td valign="top"><h:outputText value="#{R_ItemDetails_Backing.selectedItemBook.lcControlNumber}" styleClass="itemDetailsData" escape="false" /></td>
+			</tr>
+			<tr>
+				<td valign="top"><h:outputText value="Call Number" styleClass="itemDetailsLabel" /></td>
+				<td valign="top"><h:outputText value="#{R_ItemDetails_Backing.selectedItemBook.callNumber}" styleClass="itemDetailsData" escape="false" /></td>
+			</tr>
+		</table>
+	</ui:composition>
+</body> 
+</html>

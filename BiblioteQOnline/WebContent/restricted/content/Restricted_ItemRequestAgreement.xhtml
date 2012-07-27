@@ -1,0 +1,85 @@
+<!--
+ *********************************************************************************************************************************************************************************
+ * #######################
+ * #   FILE DESCRIPTOR   #
+ * #######################
+ * Application: BiblioteQ Online
+ * Package: WebContent
+ * File: Restricted_ItemRequestAgreement.xhtml
+ * 
+ * #######################
+ * #   GNU DISCLAIMER    #
+ * ####################### 
+ * BiblioteQ Online is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version. BiblioteQ Online is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+ * 
+ * #######################
+ * #       Purpose       #
+ * #######################
+ * This page handles accepting the user's agreement to the terms required for Requesting an Item and actually places that request.
+ *
+ * #######################
+ * #      Revision       #
+ * ####################### 
+ * Jun 30, 2012, Clinton Bush, 1.0.0,
+ *    New file.
+ * 
+ ********************************************************************************************************************************************************************************** 
+ *
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"> 
+
+<h:head></h:head> 
+<body>
+	<ui:composition>
+		<div class="subHeaderBox">
+			<div class="sectionLeft">
+				Request Agreement
+			</div>
+		</div>
+		<h:panelGrid style="margin-left: 38px; width: 500px; text-align: left;">
+			<h:panelGroup styleClass="regularText">
+				You have requested <strong><h:outputText value="#{R_ItemRequestAgreement_Backing.selectedItem.title}" /></strong>. Please read the terms below and check the "Agreement" checkbox to complete your request.
+			</h:panelGroup>
+			<rich:panel styleClass="termsPanel" bodyClass="termsPanelBody">
+				<f:facet name="header">
+					<div style="text-align: center;">Terms</div>
+				</f:facet>
+				<h:outputText value="#{R_ItemRequestAgreement_Backing.termsForHtml}" escape="false" />
+			</rich:panel>
+			<rich:panel styleClass="agreementPanel" bodyClass="agreementPanelBody">
+				<f:facet name="header">
+					<div style="text-align: center;">Agreement</div>
+				</f:facet>
+				<table>
+					<tr>
+						<td valign="top"><h:selectBooleanCheckbox value="#{R_ItemRequestAgreement_Backing.agreementCheckboxValue}" id="cbAgreementCheckbox"/></td>
+						<td valign="top" style="padding-top: 4px;"><h:outputLabel for="cbAgreementCheckbox" value="#{R_ItemRequestAgreement_Backing.agreementForHtml}"/></td>
+					</tr>
+				</table>
+			</rich:panel>
+			<h:panelGroup>
+				&nbsp;
+			</h:panelGroup>
+			<h:panelGroup>
+				<div class="agreementNav" style="float: left; clear: none;">
+					<div style="float: left; clear:none; padding-right: 4px;"><h:commandLink action="#{R_ItemRequestAgreement_Backing.gotoLastPage}"><h:graphicImage value="../imgs/back32.png" style="margin-top: -5px; border: none;"/></h:commandLink></div>
+					<div style="float: left; clear:none;"><h:commandLink action="#{R_ItemRequestAgreement_Backing.gotoLastPage}">Back</h:commandLink></div>
+				</div>
+				<div class="agreementNav" style="float: right;">
+					<div style="float: left; clear: none; "><h:commandLink action="#{R_ItemRequestAgreement_Backing.submitRequest}">Request</h:commandLink></div>
+					<div style="float: left; clear: none; padding-left: 4px;"><h:commandLink action="#{R_ItemRequestAgreement_Backing.submitRequest}"><img src="../imgs/forward32.png" style="margin-top: -5px; border: none;"/></h:commandLink></div>
+				</div>
+			</h:panelGroup>
+		</h:panelGrid>
+	</ui:composition>
+</body> 
+</html>

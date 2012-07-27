@@ -1,0 +1,118 @@
+<!--
+ *********************************************************************************************************************************************************************************
+ * #######################
+ * #   FILE DESCRIPTOR   #
+ * #######################
+ * Application: BiblioteQ Online
+ * Package: WebContent/admin
+ * File: Admin_Search_Settings.xhtml
+ * 
+ * #######################
+ * #   GNU DISCLAIMER    #
+ * ####################### 
+ * BiblioteQ Online is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version. BiblioteQ Online is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+ * 
+ * #######################
+ * #       Purpose       #
+ * #######################
+ * This is page allows an admin to manage the search settings for BiblioteQOnline.
+ *
+ * #######################
+ * #      Revision       #
+ * ####################### 
+ * June 2, 2012, Clinton Bush, 1.0.0,
+ *    New file.
+ * 
+ ********************************************************************************************************************************************************************************** 
+ *
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+
+	<h:head></h:head> 
+	<h:body>
+		<ui:composition>
+			<div class="subHeaderBox">
+				<div class="sectionLeft">
+					Search Settings
+				</div>
+				<div class="sectionOther">
+					&nbsp;
+				</div>
+				<div class="sectionOther" style="text-align: right;">
+					<a4j:commandButton value="Save." actionListener="#{A_Settings_Search_Backing.save}" execute="@all" render="@all"/>
+				</div>
+			</div>
+			<div class="subNavBox">
+				<ui:include src="/admin/navigation/Admin_Settings_Sub_Navigation.xhtml" />
+			</div>
+			<div class="subContentBox" style="text-align: left;">
+				<!-- RESULTS -->
+				<h:outputText value="Results" styleClass="settingSection" />
+				<h:panelGrid columns="2" width="400" cellpadding="1" cellspacing="0" style="margin-bottom: 10px;" columnClasses="settingLeftColumn, settingRightColumn">
+					<h:outputText value="Results Per Page" styleClass="settingLabel" />
+					<h:inputText id="txtResultsPerPage" size="20" style="text-align: right;" value="#{A_Settings_Search_Backing.resultsPerPage}">
+						<f:validator validatorId="IntegerValidator" />
+					</h:inputText>
+					
+					<h:outputText value="Show Type Icons" styleClass="settingLabel" />
+					<h:selectOneRadio id="rbShowTypeIcons" value="#{A_Settings_Search_Backing.showTypeIcons}" styleClass="settingLabel" style="float: right;">
+						<f:selectItem itemLabel="Yes" itemValue="true"/>
+						<f:selectItem itemLabel="No" itemValue="false" />
+					</h:selectOneRadio>
+				</h:panelGrid>
+				
+				<!-- SECURITY -->
+				<h:outputText value="Security" styleClass="settingSection" />
+				<h:panelGrid columns="2" width="400" cellpadding="1" cellspacing="0" style="margin-bottom: 10px;" columnClasses="settingLeftColumn, settingRightColumn">
+					<h:outputText value="Allow Non-Users to Search" styleClass="settingLabel" />
+					<h:selectOneRadio id="rbAllowNonUserSearch" value="#{A_Settings_Search_Backing.allowNonUserSearch}" styleClass="settingLabel" style="float: right;">
+						<f:selectItem itemLabel="Yes" itemValue="true" />
+						<f:selectItem itemLabel="No" itemValue="false" />
+					</h:selectOneRadio>
+				</h:panelGrid>
+				
+				<!-- INDEXING -->
+				<h:outputText value="Indexing" styleClass="settingSection" />
+				<h:panelGrid columns="2" width="400" cellpadding="1" cellspacing="0" style="margin-bottom: 10px;" columnClasses="settingLeftColumn, settingRightColumn">
+					<h:outputText value="Auto-Indexing" styleClass="settingLabel" />
+					<h:selectOneRadio id="rbAutoIndexing" value="#{A_Settings_Search_Backing.autoIndexing}" styleClass="settingLabel" style="float: right;">
+						<f:selectItem itemLabel="Yes" itemValue="true" />
+						<f:selectItem itemLabel="No" itemValue="false" />
+					</h:selectOneRadio>
+					
+					<h:outputText value="Auto-Indexing Frequency" styleClass="settingLabel" />
+					<h:selectOneListbox id="ddlAutoIndexingFrequency" value="#{A_Settings_Search_Backing.autoIndexingFreq}" size="1">
+						<f:selectItem itemLabel="Daily" itemValue="daily" />
+						<f:selectItem itemLabel="Bi-Daily" itemValue="bi-daily" />
+						<f:selectItem itemLabel="Weekly" itemValue="weekly" />
+						<f:selectItem itemLabel="Bi-Weekly" itemValue="bi-weekly" />
+						<f:selectItem itemLabel="Monthly" itemValue="monthly" />
+						<f:selectItem itemLabel="Bi-Monthly" itemValue="bi-monthly" />
+					</h:selectOneListbox>
+					
+					<h:outputText value="Manual Index" styleClass="settingLabel" />
+					<h:panelGroup>
+						<a4j:outputPanel id="pnlIndex">
+							<rich:progressBar mode="ajax" value="#{A_Settings_Search_Indexer.recordsIndexed}" enabled="#{false}" id="pbIndex" minValue="0" maxValue="#{A_Settings_Search_Indexer.recordsTotal}"
+								rendered="#{A_Settings_Search_Indexer.indexingCommenced}" style="float: right;">
+								<h:outputText id="lblProgress" value="#{A_Settings_Search_Indexer.progress} %" />
+							</rich:progressBar>
+							<a4j:poll id="pollIndex" rendered="#{A_Settings_Search_Indexer.indexingCommenced}" enabled="#{true}" interval="50" render="lblProgress,pnlIndex"/>
+							<h:commandButton id="btnIndex" value="Index Database" action="#{A_Settings_Search_Indexer.commenceIndexing}" rendered="#{!A_Settings_Search_Indexer.indexingCommenced}" render="@all"/>
+						</a4j:outputPanel>
+					</h:panelGroup>
+				</h:panelGrid>
+			</div>
+		</ui:composition>
+	</h:body> 
+</html>

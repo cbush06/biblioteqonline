@@ -1,0 +1,215 @@
+<!--
+ *********************************************************************************************************************************************************************************
+ * #######################
+ * #   FILE DESCRIPTOR   #
+ * #######################
+ * Application: BiblioteQ Online
+ * Package: WebContent
+ * File: register.xhtml
+ * 
+ * #######################
+ * #   GNU DISCLAIMER    #
+ * ####################### 
+ * BiblioteQ Online is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version. BiblioteQ Online is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+ * 
+ * #######################
+ * #       Purpose       #
+ * #######################
+ * This page provides a way for the user to register for an online account if they are already a member of the library.
+ *
+ * #######################
+ * #      Revision       #
+ * ####################### 
+ * Apr 5, 2012, Clinton Bush, 1.0.0,
+ *    New file.
+ * 
+ ********************************************************************************************************************************************************************************** 
+ *
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"> 
+
+<h:head></h:head> 
+<h:body> 
+	<ui:composition template="/templates/main_layout_unrestricted.xhtml">
+		<ui:define name="head">
+			<script type="text/javascript" src="../js/md5.js"></script>
+			<script type="text/javascript">
+				function encryptPasswords()
+				{
+					// Have RichFaces provide the full id to the 2 password boxes
+					var pass1 = "#{rich:clientId('txtPassword')}";
+					var pass2 = "#{rich:clientId('txtVerifyPassword')}";
+
+					// Get the passwords
+					var encryptedPassword = document.getElementById(pass1).value;
+					var encryptedVerifyPassword = document.getElementById(pass2).value;
+					
+					// Salt them
+					encryptedPassword = encryptedPassword.length + ":" + encryptedPassword;
+					encryptedVerifyPassword = encryptedVerifyPassword.length + ":" + encryptedVerifyPassword;
+
+					// Encrypt them
+					encryptedPassword = MD5(encryptedPassword);
+					encryptedVerifyPassword = MD5(encryptedVerifyPassword);
+
+					// Set the password fields to the encrypted versions
+					document.getElementById(pass1).value = encryptedPassword;
+					document.getElementById(pass2).value = encryptedVerifyPassword;
+				}
+			</script>
+		</ui:define>
+		<ui:param name="title" value="iNspire"></ui:param>
+		<ui:define name="nav_area">
+			<div class="nav_item">
+				<div class="nav_item_content">
+					<div class="nav_item_content_text">
+						<img src="../imgs/keys24.png" align="top"/><h:commandLink action="logout" value="Log in" immediate="true"/>
+					</div>
+				</div>
+				<div class="nav_item_right_border"></div>
+			</div>
+			<div class="nav_item">
+				<div class="nav_item_content">
+					<div class="nav_item_content_text_selected">
+						<img src="../imgs/sign-up24.png" align="top"/><h:commandLink action="register" value="Register" immediate="true"/>
+					</div>
+				</div>
+				<div class="nav_item_right_border"></div>
+			</div>
+		</ui:define>
+		<ui:define name="content_area">
+			<style type="text/css">
+				.pnlRegister {
+					width: 400px;
+					margin-right: auto;
+					margin-left: auto;
+					margin-top: 20px;
+					
+					text-align: left;
+				}
+				
+				.pnlGrid {
+					width: 390px;
+				}
+				
+				.header {
+					width: 150%;
+				}
+			</style>
+			<rich:panel id="pnlRegister" styleClass="pnlRegister" >
+				<style type="text/css">
+					.leftCol {
+						width: 25%;
+						padding-bottom: 4px;
+					}
+					
+					.rightCol {
+						width: 75%;
+						text-align: right;
+						padding-bottom: 4px;
+					}
+					
+					.headerLeftCol {
+						text-align: left;
+					}
+					
+					.headerRightCol {
+						text-align: right;
+					}
+				</style>
+				<f:facet name="header">
+					<h:panelGrid width="390" border="0" cellpadding="0" cellspacing="0" columns="2" columnClasses="headerLeftCol, headerRightCol">
+						<span style="font-size: 10pt; font-family: Arial;">Register...</span>
+						<h:outputText value="Step #{Register_Backing.registrationStep}" style="font-size: 10pt; font-family: Arial;" />
+					</h:panelGrid>
+				</f:facet>
+				<a4j:outputPanel id="outPnlRegister1" layout="block" rendered="#{Register_Backing.registrationStep == 1}">
+					<h:panelGrid id="pnlGrid" styleClass="pnlGrid" columns="2" columnClasses="leftCol, rightCol" rowClasses="rowClass">
+						<h:outputText value="First Name:" />
+						<h:inputText id="txtFirstName" value="#{Register_Backing.txtFirstName}" style="font-family: Arial; font-size: 12pt; width: 90%;" required="true" requiredMessage="[First Name] is a required field."/>
+						
+						<h:outputText value="Last Name:" />
+						<h:inputText id="txtLastName" value="#{Register_Backing.txtLastName}" style="font-family: Arial; font-size: 12pt; width: 90%;" required = "true" requiredMessage="[Last Name] is a required field."/>
+						
+						<h:outputText value="Date of Birth:" />
+						<h:panelGroup>
+							<h:selectOneMenu id="ddlDobMonth" value="#{Register_Backing.dobMonth}" style="font-family: Arial; font-size: 12pt;">
+								<f:selectItems value="#{Register_Backing.months}" />
+							</h:selectOneMenu>
+							/
+							<h:selectOneMenu id="ddlDobDay" value="#{Register_Backing.dobDay}" style="font-family: Arial; font-size: 12pt;">
+								<f:selectItems value="#{Register_Backing.days}" />
+							</h:selectOneMenu>
+							/
+							<h:selectOneMenu id="ddlDobYear" value="#{Register_Backing.dobYear}" style="font-family: Arial; font-size: 12pt;">
+								<f:selectItems value="#{Register_Backing.years}" />
+							</h:selectOneMenu>
+						</h:panelGroup>
+						
+						<h:outputText value="Phone Number:" />
+						<h:panelGroup>
+							(
+								<h:inputText id="txtPhone1" value="#{Register_Backing.phone1}" style="font-family: Arial; font-size:12pt; width: 2em; text-align: center;" maxlength="3" required="true" requiredMessage="[Phone Area Code] is a required field.">
+									<f:validator for="txtPhone1" validatorId="IntegerValidator" />
+									<f:attribute name="FieldDescriptor" value="Phone Number Area Code" />
+								</h:inputText>
+							)
+							 	<h:inputText id="txtPhone2" value="#{Register_Backing.phone2}" style="font-family: Arial; font-size: 12pt; width: 2em; text-align: center;" maxlength="3" required="true" requiredMessage="[Phone Prefix] is a required field.">
+							 		<f:validator for="txtPhone2" validatorId="IntegerValidator" />
+							 		<f:attribute name="FieldDescriptor" value="Phone Number Prefix" />
+							 	</h:inputText>
+							 	-
+							 	<h:inputText id="txtPhone3" value="#{Register_Backing.phone3}" style="font-family: Arial; font-size: 12pt; width: 3em; text-align: center;" maxlength="4" required="true" requiredMessage="[Phone Line Number] is a required field.">
+							 		<f:validator for="txtPhone3" validatorId="IntegerValidator" />
+							 		<f:attribute name="FieldDescriptor" value="Phone Number Line Number" />
+							 	</h:inputText>
+						</h:panelGroup>
+						
+						<h:outputText value="ZIP Code:" />
+						<h:inputText id="txtZip" value="#{Register_Backing.zipCode}" style="font-family: Arial; font-size: 12pt; width: 6em; text-align: center;" maxlength="5" required="true" requiredMessage="[ZIP Code] is a required field.">
+							<f:validator for="txtZip" validatorId="IntegerValidator" />
+							<f:attribute name="FieldDescriptor" value="ZIP Code" />
+						</h:inputText>
+						
+						<h:outputText value="E-mail:" />
+						<h:inputText id="txtEmail" value="#{Register_Backing.email}" style="font-family: Arial; font-size: 12pt; width: 90%;" required="true" requiredMessage="[E-mail] is a required field." />
+						<a4j:commandButton id="btnSubmit1" value="Proceed..." action="#{Register_Backing.register}" limitRender="true" execute="mainForm:outPnlRegister#{Register_Backing.registrationStep}" render="@all" rendered="#{Register_Backing.registrationStep lt 3}"/>
+					</h:panelGrid>
+				</a4j:outputPanel>
+				<a4j:outputPanel id="outPnlRegister2" layout="block" rendered="#{Register_Backing.registrationStep == 2}" >
+					<p style="font-family: Arial;">
+						Congratulations! Your membership record was located. Now you just need to create a username and password for your new online account.
+					</p>
+					<h:panelGrid id="pnlGrid2" styleClass="pnlGrid" columns="2" columnClasses="leftCol, rightCol" rowClasses="rowClass">
+						<h:outputText value="User Name:" />
+						<h:inputText id="txtUserName" value="#{Register_Backing.txtUserName}" style="font-family: Arial; font-size: 12pt; width: 90%;" required="true" requiredMessage="[User Name] is a required field."/>
+						
+						<h:outputText value="Password:" />
+						<h:inputSecret id="txtPassword" value="#{Register_Backing.txtPassword}" style="font-family: Arial; font-size: 12pt; width: 90%;" required = "true" requiredMessage="[Password] is a required field."/>
+						
+						<h:outputText value="Verify Password:" />
+						<h:inputSecret id="txtVerifyPassword" value="#{Register_Backing.txtVerifyPassword}" style="font-family: Arial; font-size: 12pt; width: 90%;" required = "true" requiredMessage="[Verify Password] is a required field."/>
+					</h:panelGrid>
+					<a4j:commandButton id="btnSubmit2" value="Register..." onclick="encryptPasswords()" action="#{Register_Backing.register}" limitRender="true" execute="mainForm:outPnlRegister#{Register_Backing.registrationStep}" render="@all" rendered="#{Register_Backing.registrationStep lt 3}"/>
+				</a4j:outputPanel>
+				<a4j:outputPanel id="outPnlRegister3" layout="block" rendered="#{Register_Backing.registrationStep == 3}">
+					<p style="font-family: Arial; font-weight: bold; text-align: center;">Success!</p>
+					<p style="font-family: Arial;">
+						You are now ready to use the online system. Please click "Log in" at your left to go back to the log in page. There, you only need to log in using your new username and password to begin.
+					</p>
+				</a4j:outputPanel>
+			</rich:panel>
+		</ui:define>
+	</ui:composition>
+</h:body> 
+</html>

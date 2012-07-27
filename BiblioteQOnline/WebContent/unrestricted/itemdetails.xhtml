@@ -1,0 +1,146 @@
+<!--
+ *********************************************************************************************************************************************************************************
+ * #######################
+ * #   FILE DESCRIPTOR   #
+ * #######################
+ * Application: BiblioteQ Online
+ * Package: WebContent
+ * File: itemdetails.xhtml
+ * 
+ * #######################
+ * #   GNU DISCLAIMER    #
+ * ####################### 
+ * BiblioteQ Online is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version. BiblioteQ Online is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+ *
+ * #######################
+ * #       Purpose       #
+ * #######################
+ * This page provides details about the item a user selected in their search results.
+ * 
+ * #######################
+ * #      Revision       #
+ * ####################### 
+ * Jun 27, 2012, Clinton Bush, 1.0.0,
+ *    New file.
+ * 
+ ********************************************************************************************************************************************************************************** 
+ *
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:c="http://java.sun.com/jstl/core"> 
+
+<h:head></h:head> 
+	<ui:composition template="/templates/main_layout_unrestricted.xhtml">
+		<ui:define name="head">
+		</ui:define>
+		
+		<ui:param name="title" value="iNspire"></ui:param>
+		
+		<ui:define name="nav_area">
+			<div class="nav_item">
+				<div class="nav_item_content">
+					<div class="nav_item_content_text">
+						<img src="../imgs/keys24.png" align="top"/><h:commandLink action="logout" value="Log in" immediate="true"/>
+					</div>
+				</div>
+				<div class="nav_item_right_border"></div>
+			</div>
+			<div class="nav_item">
+				<div class="nav_item_content">
+					<div class="nav_item_content_text">
+						<img src="../imgs/sign-up24.png" align="top"/><h:commandLink action="register" value="Register" immediate="true"/>
+					</div>
+				</div>
+				<div class="nav_item_right_border"></div>
+			</div>
+		</ui:define>
+		
+		<ui:define name="content_area">
+			<div class="subHeaderBox">
+				<div class="sectionLeft" style="float: left; clear: none;">
+					<div style="float: left; clear:none; padding-right: 4px;"><h:commandLink action="#{Search_Backing.gotoUnRestrictedSearchResultsReturn}"><h:graphicImage value="../imgs/back32.png" style="margin-top: -5px; border: none;"/></h:commandLink></div>
+					<div style="float: left; clear:none;"><h:commandLink action="#{Search_Backing.gotoUnRestrictedSearchResultsReturn}">Back</h:commandLink></div>
+				</div>
+			</div>
+			<div class="subContentBox" style="text-align: left;">
+				<table>
+					<tr>
+						<td colspan="2" valign="top" style="padding-bottom: 20px;">
+							<h:outputText value="#{U_ItemDetails_Backing.selectedItem.title}" styleClass="itemDetailsHeader"/>
+							&nbsp;&nbsp;
+							<h:outputText value="[#{U_ItemDetails_Backing.selectedItem.type}]" styleClass="itemDetailsType" />
+						</td>
+					</tr>
+					<tr>
+						<td valign="top">
+							<img src="http://#{Page_Backing.rootPath}/images/#{U_ItemDetails_Backing.selectedItem.type}/#{U_ItemDetails_Backing.selectedItem.id}" height="200px" />
+						</td>
+						<td valign="top" style="padding-left: 5px;">
+							<table cellspacing="10">
+								<tr>
+									<td valign="top"><h:outputText value="#{U_ItemDetails_Backing.selectedItem.creatorLabel}" styleClass="itemDetailsLabel" /></td>
+									<td valign="top"><h:outputText value="#{U_ItemDetails_Backing.selectedItem.creator}" styleClass="itemDetailsData" escape="false" /></td>
+								</tr>
+								<tr>
+									<td valign="top"><h:outputText value="#{U_ItemDetails_Backing.selectedItem.companyLabel}" styleClass="itemDetailsLabel" /></td>
+									<td valign="top"><h:outputText value="#{U_ItemDetails_Backing.selectedItem.company}" styleClass="itemDetailsData" escape="false" /></td>
+								</tr>
+								<tr>
+									<td valign="top"><h:outputText value="#{U_ItemDetails_Backing.selectedItem.dateCreatedLabel}" styleClass="itemDetailsLabel" /></td>
+									<td valign="top"><h:outputText value="#{U_ItemDetails_Backing.selectedItem.dateCreated}" styleClass="itemDetailsData" escape="false" /></td>
+								</tr>
+								<tr>
+									<td valign="top"><h:outputText value="#{U_ItemDetails_Backing.selectedItem.categoriesLabel}" styleClass="itemDetailsLabel" /></td>
+									<td valign="top"><h:outputText value="#{U_ItemDetails_Backing.selectedItem.categoriesForHtml}" styleClass="itemDetailsData" escape="false" /></td>
+								</tr>
+								<tr>
+									<td valign="top"><h:outputText value="Library Location" styleClass="itemDetailsLabel" /></td>
+									<td valign="top"><h:outputText value="#{U_ItemDetails_Backing.selectedItem.location}" styleClass="itemDetailsData" escape="false" /></td>
+								</tr>
+								<tr>
+									<td valign="top"><h:outputText value="Language" styleClass="itemDetailsLabel" /></td>
+									<td valign="top"><h:outputText value="#{U_ItemDetails_Backing.selectedItem.language}" styleClass="itemDetailsData" escape="false" /></td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="subHeaderBox">
+				&nbsp;
+			</div>
+			<div class="subContentBox" style="text-align: left;">
+				<table>
+					<tr>
+						<td valign="top" style="padding-bottom: 10px;">
+							<h:outputText value="#{U_ItemDetails_Backing.selectedItem.abstractLabel}" styleClass="itemDetailsSubHeader"/>
+						</td>
+					</tr>
+					<tr>
+						<td valign="top">
+							<h:outputText value="#{U_ItemDetails_Backing.selectedItem.abstractForHtml}" styleClass="itemDetailsData" escape="false" />
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="subHeaderBox">
+				&nbsp;
+			</div>
+			<div class="subContentBox" style="text-align: left;">
+				<ui:include src="#{U_ItemDetails_Backing.specificDetailsPage}" />
+				<p>&nbsp;</p>
+				<p>&nbsp;</p>
+			</div>
+		</ui:define>
+	</ui:composition>
+</html>

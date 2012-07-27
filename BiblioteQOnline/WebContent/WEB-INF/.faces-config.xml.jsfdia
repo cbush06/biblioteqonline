@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PROCESS model-entity="JSFProcess">
+ <PROCESS-ITEM NAME="rules:#index.xhtml" PATH="/index.xhtml"
+  SHAPE="32,17,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules:#index.xhtml:0" NAME="item"
+   PATH="/index.xhtml" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="login::#restricted#index.xhtml"
+    NAME="output1" PATH="/restricted/index.xhtml"
+    TARGET="rules:#restricted#index.xhtml" TITLE="login" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT ID="search::#unrestricted#searchresults.xhtml"
+    NAME="output" PATH="/unrestricted/searchresults.xhtml"
+    TARGET="rules:#unrestricted#searchresults.xhtml" TITLE="search" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:*" PATH="*" SHAPE="32,129,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules:*:0" NAME="item" PATH="*" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="logout::#logout#" NAME="output"
+    PATH="/logout/" TARGET="rules:#logout#" TITLE="logout" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT ID="register::#unrestricted#register.xhtml"
+    NAME="output1" PATH="/unrestricted/register.xhtml"
+    TARGET="rules:#unrestricted#register.xhtml" TITLE="register" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#restricted#*" PATH="/restricted/*"
+  SHAPE="32,353,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules:#restricted#*:0" NAME="item"
+   PATH="/restricted/*" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="admin::#admin#index.xhtml" NAME="output"
+    PATH="/admin/index.xhtml" TARGET="rules:#admin#index.xhtml"
+    TITLE="admin" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT ID="update::#restricted#index.xhtml"
+    NAME="output1" PATH="/restricted/index.xhtml"
+    TARGET="rules:#restricted#index.xhtml" TITLE="update" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#admin#*" PATH="/admin/*" SHAPE="32,273,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules:#admin#*:0" NAME="item" PATH="/admin/*" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="restrictedindex::#restricted#index.xhtml"
+    NAME="output" PATH="/restricted/index.xhtml"
+    TARGET="rules:#restricted#index.xhtml" TITLE="restrictedindex" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#restricted#index.xhtml"
+  PATH="/restricted/index.xhtml" SHAPE="240,33,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#admin#index.xhtml" PATH="/admin/index.xhtml"
+  SHAPE="240,369,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#logout#" PATH="/logout/" SHAPE="240,145,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#unrestricted#searchresults.xhtml"
+  PATH="/unrestricted/searchresults.xhtml" SHAPE="272,689,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules:#unrestricted#searchresults.xhtml:0"
+   NAME="item" PATH="/unrestricted/searchresults.xhtml" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="search::#unrestricted#searchresults.xhtml"
+    NAME="output" PATH="/unrestricted/searchresults.xhtml"
+    TARGET="rules:#unrestricted#searchresults.xhtml" TITLE="search" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="itemdetails::#unrestricted#itemdetails.xhtml" NAME="output1"
+    PATH="/unrestricted/itemdetails.xhtml"
+    TARGET="rules:#unrestricted#itemdetails.xhtml" TITLE="itemdetails" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#unrestricted#itemdetails.xhtml"
+  PATH="/unrestricted/itemdetails.xhtml" SHAPE="496,673,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules:#unrestricted#itemdetails.xhtml:0" NAME="item"
+   PATH="/unrestricted/itemdetails.xhtml" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="search::#unrestricted#searchresults.xhtml"
+    NAME="output" PATH="/unrestricted/searchresults.xhtml"
+    TARGET="rules:#unrestricted#searchresults.xhtml" TITLE="search" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#unrestricted#register.xhtml"
+  PATH="/unrestricted/register.xhtml" SHAPE="256,833,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules:#unrestricted#register.xhtml:0" NAME="item"
+   PATH="/unrestricted/register.xhtml" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="search::#unrestricted#searchresults.xhtml"
+    NAME="output" PATH="/unrestricted/searchresults.xhtml"
+    TARGET="rules:#unrestricted#searchresults.xhtml" TITLE="search" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+</PROCESS>

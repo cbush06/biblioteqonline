@@ -1,0 +1,525 @@
+/*
+ *********************************************************************************************************************************************************************************
+ * #######################
+ * #   FILE DESCRIPTOR   #
+ * #######################
+ * Application: BiblioteQ Online
+ * Package: WebContent
+ * File: main_layout.css
+ * 
+ * #######################
+ * #   GNU DISCLAIMER    #
+ * ####################### 
+ * BiblioteQ Online is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version. BiblioteQ Online is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+ * 
+ * #######################
+ * #       Purpose       #
+ * #######################
+ * This is the main stylesheet for the BiblioteQOnline application.
+ *
+ * #######################
+ * #      Revision       #
+ * ####################### 
+ * Apr 5, 2012, Clinton Bush, 1.0.0,
+ *    New file.
+ * 
+ ********************************************************************************************************************************************************************************** 
+ */
+@CHARSET "ISO-8859-1";
+
+/*
+ * Tag Re-definition
+ */
+body {
+	margin: 0;
+	padding: 0;
+}
+
+/*
+ * IDs
+ */
+#header_bar {
+	height: 102px;
+	width: 100%;
+	
+	margin: 0;
+	padding: 0;
+	
+	float: left;
+	clear: right;
+	
+	background-image: url('../imgs/header_bg.jpg');
+	background-repeat: repeat-x;
+}
+
+#header_logo {
+	height: 102px;
+	width: 262px;
+	
+	float: left;
+	clear: none;
+	
+	background-image: url('../imgs/header_logo.jpg');
+	background-position: center left;
+	background-repeat: no-repeat;
+}
+
+#header_search {
+	float: right;
+	overflow: hidden;
+	
+	height: 60px;
+	padding-top: 30px;
+	margin-right: 20px;
+	
+	text-align: right;
+}
+
+#page_body {
+	width: 100%;
+	
+	margin: 0;
+	padding: 0;
+	
+	float: left;
+	clear: both;
+}
+
+#nav_area {
+	width: 208px;
+	height: 100%;
+	
+	float: left;
+	clear: none;
+	
+	padding-top: 30px;
+	
+	background-image: url('../imgs/nav_bg.jpg');
+	background-repeat: repeat-y;
+}
+
+/*
+ * Classes
+ */
+.agreementPanel {
+	width: 100%;
+	margin-top: 10px;
+}
+
+.agreementPanelBody {
+	background-color: #FFFFFF;
+	text-align: left;
+}
+
+.agreementNav A {
+	font-family: Arial;
+	font-size: 20px;
+	color: #DD4B39;
+	text-align: left;
+	
+	text-decoration: none;
+}
+
+.agreementNav A:hover {
+	text-decoration: underline;
+}
+
+.agreementNav A:visited {
+	font-family: Arial;
+	font-size: 20px;
+	color: #DD4B39;
+	text-align: left;
+	
+	text-decoration: none;
+}
+
+.highlightSubLinks {
+	padding-left: 40px;
+	background-color: #FFFFFF;
+	color: #000000;
+}
+
+.highlightSubLinks:hover {
+	color: #000000;
+	text-decoration: none;
+	
+	background-color: #EEE;
+	
+	display: block;
+}
+
+.highlightSubLinks:visited {
+	color: #000000;
+}
+
+.highlightSubLinksSelected {
+	padding-left: 35px;
+	
+	color: #DD4B39;
+	
+	background-color: #FFFFFF;
+	border-left: 5px solid #DD4B39;
+}
+
+.highlightSubLinksSelected:hover {
+	color: #DD4B39;
+	
+	background-color: #EEE;
+}
+
+.highlightSubLinksSelected:visited {
+	color: #DD4B39;
+}
+
+.itemDetailsHeader {
+	font-family: Arial;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+.itemDetailsSubHeader {
+	font-family: Arial;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.itemDetailsType {
+	font-family: Arial;
+	font-size: 20px;
+}
+
+.itemDetailsLabel {
+	font-family: Arial;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.itemDetailsData {
+	font-family: Arial;
+	font-size: 14px;
+}
+
+.nav_item {
+	width: 208px;
+	height: 44px;
+	
+	margin-bottom: 10px;
+	
+	float: left;
+	clear: both;
+}
+
+.nav_item_content {
+	width: 196px;
+	height: 44px;
+	
+	float: left;
+	clear: none;
+	
+	padding-top: 10px;
+	
+	background-image: url('../imgs/nav_item_bg.jpg');
+	background-repeat: repeat-x;
+}
+
+.nav_item_content_text {
+	float: left;
+	clear: none;
+	margin-left: 12px;
+	
+	font-family: Arial;
+	font-size: 20px;
+	color: #4f4f4f;
+}
+
+.nav_item_content_text a {
+	font-family: Arial;
+	font-size: 20px;
+	color: #4f4f4f;
+	text-decoration: none;
+	margin-left: 10px;
+}
+
+.nav_item_content_text a:link {
+	font-family: Arial;
+	font-size: 20px;
+	color: #4f4f4f;
+}
+
+.nav_item_content_text a:visited {
+	font-family: Arial;
+	font-size: 20px;
+	color: #4f4f4f;
+}
+
+.nav_item_content_text a:hover {
+	font-family: Arial;
+	font-size: 20px;
+	color: white;
+}
+
+.nav_item_content_text_selected {
+	float: left;
+	clear: none;
+	margin-left: 12px;
+	
+	font-family: Arial;
+	font-size: 20px;
+	color: white;
+}
+
+.nav_item_content_text_selected a {
+	font-family: Arial;
+	font-size: 20px;
+	color: white;
+	text-decoration: none;
+	margin-left: 10px;
+}
+
+.nav_item_content_text_selected a:link {
+	font-family: Arial;
+	font-size: 20px;
+	color: white;
+}
+
+.nav_item_content_text_selected a:visited {
+	font-family: Arial;
+	font-size: 20px;
+	color: white;
+}
+
+.nav_item_content_text_selected a:hover {
+	font-family: Arial;
+	font-size: 20px;
+	color: white;
+	text-decoration: underline;
+}
+
+.nav_item_right_border {
+	width: 12px;
+	height: 44px;
+	
+	float: left;
+	clear: none;
+	
+	background-image: url('../imgs/nav_item_bg_far_right.jpg');
+	background-repeat: repeat-y;
+}
+
+.regularText {
+	font-family: Arial;
+	font-size: 14px;
+}
+
+.resultPaginationDiv
+{
+	float: left;
+	clear: both;
+	
+	margin-top: 10px;
+	margin-bottom: 10px;
+	
+	width: 100%;
+	
+	text-align: center;
+}
+
+.resultPaginationTable TR TD A
+{
+	font-family: Arial;
+	font-size: medium;
+	color: blue;
+	text-decoration: none;
+}
+
+.resultPaginationTable TR TD A:hover
+{
+	font-family: Arial;
+	font-size: medium;
+	color: blue;
+	text-decoration: underline;
+}
+
+.resultPaginationTable TR TD .selected
+{
+	font-weight: bold;
+}
+
+.resultTableDiv
+{
+   	float: left;
+   	clear: both;
+   	
+   	width: 600px;
+   	
+   	margin-bottom: 10px;
+}
+
+.resultTable TR TD A
+{
+   	font-family: Arial;
+   	font-size: medium;
+   	color: blue;
+   	text-decoration: underline;
+}
+
+.resultTable TR TD A:visited
+{
+	font-family: Arial;
+	font-size: small;
+	color: blue;
+	text-decoration: underline;
+}
+
+.resultTableDetails
+{
+   	font-family: Arial;
+   	font-size: small;
+   	color: #009300;
+}
+
+.resultTableDescription
+{
+   	font-family: Arial;
+   	font-size: small;
+   	color: #000000;
+}
+
+.settingLabel
+{
+	font-family: Arial;
+	font-size: 12px;
+}
+
+.settingSection
+{
+	font-family: Arial;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.settingLeftColumn
+{
+	vertical-align: top;
+}
+
+.settingRightColumn
+{
+	text-align: right;
+}
+
+.subHeaderBox {
+	width: 100%;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #EEE;
+	margin-bottom: 10px;
+	float: left;
+	clear: right;
+}
+
+.subHeaderBox .sectionLeft {
+	font-family: Arial;
+	font-size: 20px;
+	color: #DD4B39;
+	text-align: left;
+	
+	width: 250px;
+	padding-left: 40px;
+	
+	float: left;
+	clear: none;
+}
+
+.subHeaderBox .sectionLeft A {
+	font-family: Arial;
+	font-size: 20px;
+	color: #DD4B39;
+	text-align: left;
+	
+	text-decoration: none;
+}
+
+.subHeaderBox .sectionLeft A:hover {
+	text-decoration: underline;
+}
+
+.subHeaderBox .sectionOther {
+	width: 33%;
+	float: left;
+	clear: none;
+	
+	font-family: Arial;
+	font-size: 14px;
+	text-align: left;
+	color: #999999;
+}
+
+.subHeaderBox .sectionOther A {
+	font-family: Arial;
+	font-size: 20px;
+	color: #DD4B39;
+	text-align: left;
+	
+	text-decoration: none;
+}
+
+.subHeaderBox .sectionOther A:hover {
+	text-decoration: underline;
+}
+
+.subLinks {
+	padding-top: 6px;
+	padding-bottom: 6px;
+	
+	font-family: Arial;
+	font-size: 14px;
+	text-align: left;
+	text-decoration: none;
+	
+	display: block;
+}
+
+.subLinks:active {
+	color: #DD4B39;
+}
+
+.subNavBox {
+	width: 200px;
+	float: left;
+	clear: none;
+}
+
+.subContentBox {
+	float: left;
+	clear: right;
+	
+	margin-left: 20px;
+}
+
+.termsPanel {
+	width: 100%;
+	margin-top: 10px;
+}
+
+.termsPanelBody {
+	overflow-y: scroll;
+	height:150px;
+	background-color: #FFFFFF;
+	text-align: left;
+}
+
+.welcomeMessage {
+	width: 100%;
+	padding-left: 40px;
+	margin-top: 10px;
+	
+	font-family: Arial;
+	font-size: 14px;
+	font-weight: bold;
+	text-align: left;
+}

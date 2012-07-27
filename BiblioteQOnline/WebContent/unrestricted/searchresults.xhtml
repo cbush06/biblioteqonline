@@ -1,0 +1,190 @@
+<!--
+ *********************************************************************************************************************************************************************************
+ * #######################
+ * #   FILE DESCRIPTOR   #
+ * #######################
+ * Application: BiblioteQ Online
+ * Package: WebContent
+ * File: 
+ * 
+ * #######################
+ * #   GNU DISCLAIMER    #
+ * ####################### 
+ * BiblioteQ Online is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version. BiblioteQ Online is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+ *
+ * #######################
+ * #       Purpose       #
+ * #######################
+ * This page provides search results coming from a simple or advanced search.
+ * 
+ * #######################
+ * #      Revision       #
+ * ####################### 
+ * Jun 10, 2012, Clinton Bush, 1.0.0,
+ *    New file.
+ * 
+ ********************************************************************************************************************************************************************************** 
+ *
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:c="http://java.sun.com/jstl/core"> 
+
+<h:head></h:head> 
+	<ui:composition template="/templates/main_layout_unrestricted.xhtml">
+		<ui:define name="head">
+		</ui:define>
+		
+		<ui:param name="title" value="iNspire"></ui:param>
+		
+		<ui:define name="nav_area">
+			<div class="nav_item">
+				<div class="nav_item_content">
+					<div class="nav_item_content_text">
+						<img src="../imgs/keys24.png" align="top"/><h:commandLink action="logout" value="Log in" immediate="true"/>
+					</div>
+				</div>
+				<div class="nav_item_right_border"></div>
+			</div>
+			<div class="nav_item">
+				<div class="nav_item_content">
+					<div class="nav_item_content_text">
+						<img src="../imgs/sign-up24.png" align="top"/><h:commandLink action="register" value="Register" immediate="true"/>
+					</div>
+				</div>
+				<div class="nav_item_right_border"></div>
+			</div>
+		</ui:define>
+		
+		<ui:define name="content_area">
+			<div class="subHeaderBox">
+				<div class="sectionLeft">
+					Search
+				</div>
+				<div class="sectionOther">
+					About <h:outputText value="#{Search_Backing.totalHits}" /> results
+				</div>
+			</div>
+			<table>
+				<tr>
+					<td valign="top">
+						<div class="subNavBox">
+							<table width="100%" cellpadding="0" cellspacing="1" style="float: left; clear: both;">
+								<tr>
+									<td>
+										<a4j:commandLink value="All" render="@all" styleClass="#{Search_Backing.typeFilter == 'All' ? 'subLinks highlightSubLinksSelected' : 'subLinks highlightSubLinks'}">
+											<a4j:param assignTo="#{Search_Backing.typeFilter}" value="All" />
+										</a4j:commandLink>
+									</td>
+								</tr>
+								<tr>				
+									<td>
+										<a4j:commandLink value="Books" render="@all" styleClass="#{Search_Backing.typeFilter == 'Book' ? 'subLinks highlightSubLinksSelected' : 'subLinks highlightSubLinks'}">
+											<a4j:param assignTo="#{Search_Backing.typeFilter}" value="Book" />
+										</a4j:commandLink>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<a4j:commandLink value="DVDs" render="@all" styleClass="#{Search_Backing.typeFilter == 'DVD' ? 'subLinks highlightSubLinksSelected' : 'subLinks highlightSubLinks'}">
+											<a4j:param assignTo="#{Search_Backing.typeFilter}" value="DVD" />
+										</a4j:commandLink>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<a4j:commandLink value="Magazines" render="@all" styleClass="#{Search_Backing.typeFilter == 'Magazine' ? 'subLinks highlightSubLinksSelected' : 'subLinks highlightSubLinks'}">
+											<a4j:param assignTo="#{Search_Backing.typeFilter}" value="Magazine" />
+										</a4j:commandLink>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<a4j:commandLink value="Journals" render="@all" styleClass="#{Search_Backing.typeFilter == 'Journal' ? 'subLinks highlightSubLinksSelected' : 'subLinks highlightSubLinks'}">
+											<a4j:param assignTo="#{Search_Backing.typeFilter}" value="Journal" />
+										</a4j:commandLink>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<a4j:commandLink value="CDs" render="@all" styleClass="#{Search_Backing.typeFilter == 'CD' ? 'subLinks highlightSubLinksSelected' : 'subLinks highlightSubLinks'}">
+											<a4j:param assignTo="#{Search_Backing.typeFilter}" value="CD" />
+										</a4j:commandLink>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<a4j:commandLink value="Games" render="@all" styleClass="#{Search_Backing.typeFilter == 'VideoGame' ? 'subLinks highlightSubLinksSelected' : 'subLinks highlightSubLinks'}">
+											<a4j:param assignTo="#{Search_Backing.typeFilter}" value="VideoGame" />
+										</a4j:commandLink>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</td>
+					<td valign="top">
+						<div class="subContentBox">
+							<ui:repeat value="#{Search_Backing.searchResults}" var="item">
+								<div class="resultTableDiv">
+									<table class="resultTable">
+										<tr>
+											<h:panelGroup rendered="#{Search_Backing.iconShown}">
+												<td rowspan="3" valign="top">
+													<img src="../imgs/#{item.type}.png" />
+												</td>
+											</h:panelGroup>
+											<td style="text-align: left;">
+												<h:commandLink action="#{Search_Backing.gotoUnRestrictedSelectedItem}" value="#{item.title}">
+													<f:setPropertyActionListener target="#{Search_Backing.selectedItem}" value="#{item}" />
+												</h:commandLink>
+											</td>
+										</tr>
+										<tr>
+											<td style="text-align: left;">
+												<span class="resultTableDetails">
+													<h:outputText value="#{item.creator} / #{item.company}" />
+												</span>
+											</td>
+										</tr>
+										<tr>
+											<td style="text-align: left;">
+												<span class="resultTableDescription">
+													<h:outputText value="#{item.abstractTrimmed}" />
+												</span>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</ui:repeat>
+							
+							<div class="resultPaginationDiv">
+								<table class="resultPaginationTable" align="center">
+									<tr>
+										<ui:repeat value="#{Search_Backing.pageNumbers}" var="pageNum">
+											<td>
+												<a4j:commandLink render="@all" styleClass="#{(Search_Backing.resultsPage == pageNum.value)? 'selected' : ''}">
+													<h:outputText value="#{pageNum.display}" />
+													<a4j:param assignTo="#{Search_Backing.resultsPage}" value="#{pageNum.value}"/>
+												</a4j:commandLink>
+											</td>
+										</ui:repeat>
+									</tr>
+								</table>
+							</div>
+							
+						</div>
+					</td>
+				</tr>
+			</table>
+		</ui:define>
+	</ui:composition>
+</html>

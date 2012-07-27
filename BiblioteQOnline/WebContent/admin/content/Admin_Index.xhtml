@@ -1,0 +1,139 @@
+<!--
+ *********************************************************************************************************************************************************************************
+ * #######################
+ * #   FILE DESCRIPTOR   #
+ * #######################
+ * Application: BiblioteQ Online
+ * Package: WebContent/admin
+ * File: Admin_Index.xhtml
+ * 
+ * #######################
+ * #   GNU DISCLAIMER    #
+ * ####################### 
+ * BiblioteQ Online is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version. BiblioteQ Online is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+ * 
+ * #######################
+ * #       Purpose       #
+ * #######################
+ * This is page provides the content to the index (home) page of the admin area of the site.
+ *
+ * #######################
+ * #      Revision       #
+ * ####################### 
+ * Apr 3, 2012, Clinton Bush, 1.0.0,
+ *    New file.
+ * 
+ ********************************************************************************************************************************************************************************** 
+ *
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+
+	<h:head></h:head> 
+	<h:body>
+		<ui:composition>
+			<style type="text/css">
+				.summaryItemsPanel
+				{
+					width: 500px;
+					margin-bottom: 20px;
+				}
+				
+				.summaryItemsPanelBody
+				{
+					width: 100%;
+					padding: 0px;
+				}
+				
+				.summaryItemsPanelTable
+				{
+					width: 100%;
+					background-color: #FFFFFF;
+					
+					text-align: left;
+				}
+				
+				.summaryItemsPanelTableLeftCol
+				{
+					
+				}
+				
+				.summaryItemsPanelTableRightCol
+				{
+					text-align: right;
+				}
+				
+				.summaryItemsPanelTableRow1
+				{
+					background-color: #FFFFFF;
+				}
+				
+				.summaryItemsPanelTableRow2
+				{
+					background-color: #EEEEEE;
+				}
+			</style>
+			<div class="subHeaderBox">
+				<div class="sectionLeft">
+					Admin Home
+				</div>
+			</div>
+			<div class="subNavBox">
+				<ui:include src="/admin/navigation/Admin_AdminHome_Sub_Navigation.xhtml" />
+			</div>
+			<div class="subContentBox">
+				<rich:panel styleClass="summaryItemsPanel" bodyClass="summaryItemsPanelBody">
+					<f:facet name="header">
+						<h:outputText value="Patron Statistics" />
+					</f:facet>
+					<h:panelGrid styleClass="summaryItemsPanelTable" columns="2" columnClasses="summaryItemsPanelTableLeftCol, summaryItemsPanelTableRightCol"
+						rowClasses="summaryItemsPanelTableRow1, summaryItemsPanelTableRow2" cellpadding="2" cellspacing="0">
+						<h:outputText value="Total Library Members" />
+						<h:outputText value="#{A_Index_Backing.totalMembers}" />
+						
+						<h:outputText value="Total Web Site Users" />
+						<h:outputText value="#{A_Index_Backing.totalUsers}" />
+						
+						<h:outputText value="Total Items Borrowed" />
+						<h:outputText value="#{A_Index_Backing.totalItemsBorrowed}" />
+						
+						<h:outputText value="Total Items Requested" />
+						<h:outputText value="#{A_Index_Backing.totalRequests}" />
+						
+						<h:outputText value="Total Items Overdue" />
+						<h:outputText value="#{A_Index_Backing.totalItemsOverdue}" />
+					</h:panelGrid>
+				</rich:panel>
+				
+				<rich:panel styleClass="summaryItemsPanel" bodyClass="summaryItemsPanelBody">
+					<f:facet name="header">
+						<h:outputText value="Search Statistics" />
+					</f:facet>
+					<h:panelGrid styleClass="summaryItemsPanelTable" columns="2" columnClasses="summaryItemsPanelTableLeftCol, summaryItemsPanelTableRightCol"
+						rowClasses="summaryItemsPanelTableRow1, summaryItemsPanelTableRow2" cellpadding="2" cellspacing="0">
+						<h:outputText value="Total Items Indexed" />
+						<h:outputText value="#{A_Index_Backing.totalItemsIndexed}" />
+						
+						<h:outputText value="Last Indexing" />
+						<h:outputText value="#{A_Index_Backing.lastIndexing}" />
+						
+						<h:outputText value="Next Indexing" />
+						<h:outputText value="#{A_Index_Backing.nextIndexing}" />
+						
+						<h:outputText value="Days Since Last Indexing" />
+						<h:outputText value="#{A_Index_Backing.daysSinceLastIndexing}" />
+					</h:panelGrid>
+				</rich:panel>
+			</div>
+		</ui:composition>
+	</h:body> 
+</html>

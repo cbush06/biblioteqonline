@@ -1,0 +1,57 @@
+<!--
+ *********************************************************************************************************************************************************************************
+ * #######################
+ * #   FILE DESCRIPTOR   #
+ * #######################
+ * Application: BiblioteQ Online
+ * Package: WebContent/restricted
+ * File: index.xhtml
+ * 
+ * #######################
+ * #   GNU DISCLAIMER    #
+ * ####################### 
+ * BiblioteQ Online is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version. BiblioteQ Online is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+ * 
+ * #######################
+ * #       Purpose       #
+ * #######################
+ * This is the index (home) page of the restricted area of the site.
+ * 
+ * #######################
+ * #      Revision       #
+ * ####################### 
+ * 03 Mar 2012, Clinton Bush, 1.0.0,
+ *    New file.
+ * 
+ ********************************************************************************************************************************************************************************** 
+ *
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"> 
+
+	<h:head></h:head> 
+	<h:body> 
+		<ui:composition template="/templates/main_layout_restricted.xhtml">
+			<ui:param name="title" value="#{Page_Backing.renderPageTitle}"></ui:param>
+			<ui:define name="header_area">
+				<ui:include src="#{Page_Backing.renderPageHeader}" />
+			</ui:define>
+			<ui:define name="nav_area">
+				<ui:include src="#{Page_Backing.renderPageNavigation}" />
+			</ui:define>
+			<ui:define name="content_area">
+				<ui:include src="#{Page_Backing.renderPageContent}" />
+			</ui:define>
+		</ui:composition>
+	</h:body> 
+</html>

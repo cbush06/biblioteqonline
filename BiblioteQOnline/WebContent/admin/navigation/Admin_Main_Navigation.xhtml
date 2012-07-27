@@ -1,0 +1,93 @@
+<!--
+ *********************************************************************************************************************************************************************************
+ * #######################
+ * #   FILE DESCRIPTOR   #
+ * #######################
+ * Application: BiblioteQ Online
+ * Package: WebContent/admin
+ * File: Admin_Main_Navigation.xhtml
+ * 
+ * #######################
+ * #   GNU DISCLAIMER    #
+ * ####################### 
+ * BiblioteQ Online is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version. BiblioteQ Online is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+ * 
+ * #######################
+ * #       Purpose       #
+ * #######################
+ * This provides the main navigation menu to the admin area of the web site.
+ *
+ * #######################
+ * #      Revision       #
+ * ####################### 
+ * Apr 3, 2012, Clinton Bush, 1.0.0,
+ *    New file.
+ * 
+ ********************************************************************************************************************************************************************************** 
+ *
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"> 
+
+	<h:head></h:head> 
+	<h:body> 
+		<ui:composition>
+			<!-- Nav Item :: Admin Home -->
+			<div class="nav_item">
+				<div class="nav_item_content">
+					<div class="#{(Page_Backing.renderPage == 'Admin_Index')?'nav_item_content_text_selected':'nav_item_content_text'}">
+						<img src="../imgs/man1-24.png" align="top"/> <h:commandLink value="Admin Home" action="#{A_Navigation_Backing.gotoAdminHome}" />
+					</div>
+				</div>
+				<div class="nav_item_right_border"></div>
+			</div>
+			
+			<!-- Nav Item :: User Manager -->
+			<div class="nav_item">
+				<div class="nav_item_content">
+					<div class="#{(Page_Backing.renderPage == 'Admin_ManageUsers')?'nav_item_content_text_selected':'nav_item_content_text'}">
+						<img src="../imgs/family24.png" align="top"/> <h:commandLink value="Manage Users" action="#{A_Navigation_Backing.gotoManageUsers}" />
+					</div>
+				</div>
+				<div class="nav_item_right_border"></div>
+			</div>
+			
+			<!-- Nav Item :: System Parameters -->
+			<div class="nav_item">
+				<div class="nav_item_content">
+					<div class="#{(Page_Backing.renderPage == 'Admin_Settings' || Page_Backing.renderPage == 'Admin_Settings_Search' || Page_Backing.renderPage == 'Admin_Settings_SummaryPage')?'nav_item_content_text_selected':'nav_item_content_text'}">
+						<img src="../imgs/maintenance24.png" align="top"/> <h:commandLink value="Settings" action="#{A_Navigation_Backing.gotoSettings}" />
+					</div>
+				</div>
+				<div class="nav_item_right_border"></div>
+			</div>
+			
+			<!-- Nav Item :: Restricted Home -->
+			<div class="nav_item">
+				<div class="nav_item_content">
+					<div class="nav_item_content_text">
+						<img src="../imgs/catalog24.png" align="top"/> <h:commandLink value="My Summary" action="#{Page_Backing.gotoRestrictedHome}" />
+					</div>
+				</div>
+				<div class="nav_item_right_border"></div>
+			</div>
+			
+			<!-- Nav Item :: Log Out -->
+			<div class="nav_item">
+				<div class="nav_item_content">
+					<div class="nav_item_content_text">
+						<img src="../imgs/logout24.png" align="top"/> <h:commandLink value="Log out" action="#{Page_Backing.logout}" />
+					</div>
+				</div>
+				<div class="nav_item_right_border"></div>
+			</div>
+		</ui:composition>
+	</h:body> 
+</html>

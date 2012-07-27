@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+ *********************************************************************************************************************************************************************************
+ * #######################
+ * #   FILE DESCRIPTOR   #
+ * #######################
+ * Application: BiblioteQ Online
+ * Package: WebContent/templates
+ * File: main_layout_restricted.xhtml
+ * 
+ * #######################
+ * #   GNU DISCLAIMER    #
+ * ####################### 
+ * BiblioteQ Online is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version. BiblioteQ Online is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+ * 
+ * #######################
+ * #       Purpose       #
+ * #######################
+ * This is the layout used by all pages in the restricted area of the web site.
+ *
+ * #######################
+ * #      Revision       #
+ * ####################### 
+ * 03 Mar 2012, Clinton Bush, 1.0.0,
+ *    New file.
+ * 
+ ********************************************************************************************************************************************************************************** 
+ *
+--> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"> 
+
+	<h:head>
+		<title>#{title}</title>
+		<link rel="stylesheet" type="text/css" href="../css/main_layout.css"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<script type="text/javascript">
+			// This is a fix for IE. It doesn't render images in the Popup Panel if they are rendered with the whole page.
+			// In other words, no AJAX rendering of images...gotta love I.E.
+			function updateImage(filePath)
+			{
+				document.getElementById("imageArea").innerHTML = '<img src="' + filePath + '" width="100" />';
+			}
+		</script>
+		<script type="text/javascript" src="../js/main.js"></script>
+		<ui:insert name="head"></ui:insert>
+	</h:head>
+	<h:body>
+		<h:form id="headerForm">
+			<div id="header_bar">
+				<ui:insert name="header_area"></ui:insert>
+			</div>
+		</h:form>
+		<h:form id="mainForm">
+			<div id="page_body">
+				<table style="width: 100%; height: 100%; margin: 0; padding: 0; float: left; border: 0px; border-collapse: collapse; border-spacing: 0;">
+					<tr>
+						<td style="width: 208px; height: 100%; margin: 0; padding: 0;" valign="top">
+							<div id="nav_area">
+								<ui:insert name="nav_area"></ui:insert>
+								<div style="width: 100%; height: 700px"></div>
+							</div>
+						</td>
+						<td style="margin: 0; height: 100%; padding: 10, 0, 0, 0;text-align: center;" valign="top">
+							<ui:insert name="content_area"></ui:insert>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<a4j:outputPanel id="errorOutput" layout="block" ajaxRendered="true">
+				<rich:popupPanel id="errorPanel"  rendered="true" show="#{Page_Backing.errorMessages}" modal="true" moveable="true" autosized="true" domElementAttachment="form" zindex="1000">
+					<style type="text/css">
+						.col1 {text-align: center;}
+					</style>
+					<f:facet name="header">
+						<h:panelGroup>
+							Errors
+						</h:panelGroup>
+					</f:facet>
+					<h:panelGrid columns="1" style="width: 300px; height: auto;">
+						<rich:messages layout="list">
+							<f:facet name="passedMarker">
+								<h:graphicImage value="/imgs/passed.gif" />
+							</f:facet>
+							<f:facet name="errorMarker">
+								<h:graphicImage value="/imgs/error.gif" />
+							</f:facet>
+						</rich:messages>
+					</h:panelGrid>
+					<h:panelGrid width="100%" columns="1" columnClasses="col1">
+						<a4j:commandButton type="button" value="Close" onclick="#{rich:component('errorPanel')}.hide(); return false;" />
+					</h:panelGrid>
+				</rich:popupPanel>
+			</a4j:outputPanel>
+			<a4j:outputPanel id="itemInfo" layout="block" ajaxRendered="true">
+				<rich:popupPanel id="itemInfoPanel" rendered="true" show="#{Page_Backing.itemInfoShown}" modal="true" moveable="true" autosized="true" domElementAttachment="form" zindex="1000" width="500" onshow="updateImage('http://#{Page_Backing.rootPath}/images/#{Page_Backing.infoItem.type}/#{Page_Backing.infoItem.id}')">
+					<style type="text/css">
+						.col1 {text-align: center;}
+					</style>
+					<f:facet name="header">
+						<h:panelGroup>
+							#{Page_Backing.infoItem.type} Item Information
+						</h:panelGroup>
+					</f:facet>
+					<table width="100%">
+						<tr>
+							<td valign="top"><h:outputText value="#{Page_Backing.infoItem.titleLabel}:" /></td>
+							<td valign="top">
+								<a4j:commandLink value="#{Page_Backing.infoItem.title}">
+									<a4j:ajax event="click" render="@all" listener="#{Page_Backing.gotoItemDetails}" />
+								</a4j:commandLink>
+							</td>
+							<td rowspan="5" align="center" valign="middle" id="imageArea"></td>
+						</tr>
+						<tr>
+							<td valign="top"><h:outputText value="#{Page_Backing.infoItem.creatorLabel}:" /></td>
+							<td valign="top"><h:outputText value="#{Page_Backing.infoItem.creator}" /></td>
+						</tr>
+						<tr>
+							<td valign="top"><h:outputText value="#{Page_Backing.infoItem.dateCreatedLabel}:" /></td>
+							<td valign="top"><h:outputText value="#{Page_Backing.infoItem.dateCreated}" /></td>
+						</tr>
+						<tr>
+							<td valign="top"><h:outputText value="#{Page_Backing.infoItem.companyLabel}:" /></td>
+							<td valign="top"><h:outputText value="#{Page_Backing.infoItem.company}" /></td>
+						</tr>
+						<tr>
+							<td valign="top"><h:outputText value="#{Page_Backing.infoItem.categoriesLabel}:" /></td>
+							<td valign="top"><h:outputText value="#{Page_Backing.infoItem.categoriesForHtml}" escape="false" /></td>
+						</tr>
+						<tr>
+							<td colspan="3" valign="top"><h:outputText value="#{Page_Backing.infoItem.abstractLabel}:" /></td>
+						</tr>
+						<tr>
+							<td colspan="3" valign="top">
+								<h:panelGroup layout="block" style="width: 100%; height: 100px; overflow-y: scroll;">
+									<h:outputText value="#{Page_Backing.infoItem.abstractForHtml}" />
+								</h:panelGroup>
+							</td>
+						</tr>
+					</table>
+					<h:panelGrid width="100%" columns="1" columnClasses="col1">
+						<a4j:commandButton type="button" value="Close">
+							<a4j:ajax event="click" execute="@all" render="@all" listener="#{Page_Backing.clearItemListener}" />
+						</a4j:commandButton>
+					</h:panelGrid>
+				</rich:popupPanel>
+			</a4j:outputPanel>
+			<a4j:outputPanel id="infoOutput" layout="block" ajaxRendered="true">
+				<style type="text/css">
+					.col1 {text-align: center;}
+				</style>
+				<rich:popupPanel id="infoPanel" rendered="true" show="#{Page_Backing.infoMessageShown}" modal="true" moveable="true" autosized="true" domElementAttachment="form" zindex="1000">
+					<f:facet name="header">
+						<h:panelGroup>
+							<h:outputText value="#{Page_Backing.infoTitle}" />
+						</h:panelGroup>
+					</f:facet>
+					<h:outputText value="#{Page_Backing.infoMessage}" />
+					<h:panelGrid width="100%" columns="1" columnClasses="col1">
+						<a4j:commandButton type="button" value="Close" execute="@all" render="@all" actionListener="#{Page_Backing.clearInfoMessage}" />
+					</h:panelGrid>
+				</rich:popupPanel>
+			</a4j:outputPanel>
+		</h:form>
+	</h:body> 
+</html>
