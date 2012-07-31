@@ -1,0 +1,48 @@
+/*********************************************************************************************************************************************************************************
+ * #######################
+ * #   FILE DESCRIPTOR   #
+ * #######################
+ * Application: BiblioteQEAR
+ * Package: EarContent/DevNotes
+ * File: DevNotes.txt
+ * 
+ * #######################
+ * #   GNU DISCLAIMER    #
+ * ####################### 
+ * BiblioteQ Online is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version. BiblioteQ Online is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+ * 
+ * #######################
+ * #       Purpose       #
+ * #######################
+ * This file outlines many of the standards, specifications, and general notes adhered to during the development of BiblioteQOnline.
+ *
+ * #######################
+ * #      Revision       #
+ * ####################### 
+ * Jul 27, 2012, Clinton Bush, 1.1.1,
+ *    New file.
+ * 
+ ********************************************************************************************************************************************************************************** 
+ */
+
+#########################################
+#                            		   	#
+#		VERSION NUMBERING SCHEME		#
+#										#
+#########################################
+
+The numbering scheme employed by BiblioteQOnline uses 3 numbers separated by decimals (e.g. 1.1.1).
+
+First Number: Indicates a major release of the software. This release either has broken backwards compatibility or has required extensive integration testing to ensure such
+			  compatibility is maintained.
+			  
+Second Number: Indicates a new build releases. This is the culmination of exactly 10 enhancements, bug fixes, or additional features. Developer tests should be conducting on
+			   all major components of the software to ensure no other features are affected by the changes.
+			   
+Third Number: Indicates the addition of a new enhancement, bug fix, or feature to the software. Developer testing should be performed on the component to ensure it functions
+			  properly and does not adversely affect any related components.
+			  

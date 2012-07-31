@@ -61,6 +61,7 @@ public class Constants
 	public static String PAGE_RESTRICTED_ITEMREQUESTAGREEMENT = "Restricted_ItemRequestAgreement";
 	public static String PAGE_RESTRICTED_ITEMREQUESTCONFIRMATION = "Restricted_ItemRequestConfirmation";
 	public static String PAGE_RESTRICTED_MYACCOUNT = "Restricted_MyAccount";
+	public static String PAGE_RESTRICTED_BROWSE = "Restricted_Browse";
 	
 	// Admin
 	public static String PAGE_ADMIN_INDEX = "Admin_Index";

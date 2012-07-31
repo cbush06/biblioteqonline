@@ -35,7 +35,8 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:a4j="http://richfaces.org/a4j"> 
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"> 
 
 	<h:head></h:head> 
 	<h:body> 
@@ -43,11 +44,18 @@
 				<div id="header_logo"></div>
 				<div id="header_search">
 					<a4j:outputPanel id="searchPanel" layout="inline">
+						<script type="text/javascript">
+							function clickButtonSearch()
+							{
+								document.getElementById("#{rich:clientId('restrictedSearch')}").click();
+							}
+						</script>
 						<h:inputText size="20" id="txtHeaderSearch" style="font-family: Arial; font-size:12pt; height: 25px; width: 300px; padding-left: 10px;" value="#{Search_Backing.simpleSearchQuery}"/>
 						<h:selectOneMenu id="ddlSearchType" value="#{Search_Backing.searchType}" style="font-family: Arial; font-size:12pt; height: 29px; margin-left: 10px; padding-left: 4px;">
 							<f:selectItems value="#{Search_Backing.searchTypeOptions}"/>
 						</h:selectOneMenu>
-						<h:commandButton action="#{Search_Backing.gotoRestrictedSearchResults}" value="Submit" style="font-family: Arial; font-size: 12pt; height: 28px; background-image: url('../imgs/search24.png'); background-position: 10% 50%; background-repeat: no-repeat; padding-left: 30px; padding-top: 4px; padding-bottom: 4px; margin-left: 4px; cursor: pointer;" />
+						<a4j:commandButton id="restrictedSearch" action="#{Search_Backing.gotoRestrictedSearchResults}" type="button" execute="@all" render="@all" value="Submit" style="font-family: Arial; font-size: 12pt; height: 28px; background-image: url('../imgs/search24.png'); background-position: 10% 50%; background-repeat: no-repeat; padding-left: 30px; padding-top: 4px; padding-bottom: 4px; margin-left: 4px; cursor: pointer;" />
+						<rich:hotKey key="return" selector="#txtHeaderSearch" enabledInInput="true" preventDefault="true" onkeydown="clickButtonSearch(); return false;" />
 					</a4j:outputPanel>
 				</div>
 		</ui:composition>

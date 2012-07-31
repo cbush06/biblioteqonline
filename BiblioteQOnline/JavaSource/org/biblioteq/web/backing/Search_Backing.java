@@ -148,6 +148,7 @@ public class Search_Backing
 	 * Query entered in the Simple Search textbox.
 	 */
 	private String simpleSearchQuery = "";
+	private String originalSimpleSearchQuery = "";
 	
 	/**
 	 * If set, this will filter the results based on item type.
@@ -651,79 +652,9 @@ public class Search_Backing
 	}
 	
 	/**
-	 * Allows the Page_Backing bean to be injected into this class.
-	 * 
-	 * @param pageBackingBean
-	 *            the pageBackingBean to set
-	 */
-	public void setPageBackingBean(Page_Backing pageBackingBean)
-	{
-		this.pageBackingBean = pageBackingBean;
-	}
-	
-	/**
-	 * Sets the page number of the results page to show.
-	 * 
-	 * @param resultsPage
-	 *            (int) The resultsPage to set.
-	 */
-	public void setResultsPage(int resultsPage)
-	{
-		this.resultsPage = resultsPage;
-		this.continueSearch();
-	}
-	
-	/**
-	 * Sets the search type.
-	 * 
-	 * @param searchType
-	 *            (String) The search type.
-	 */
-	public void setSearchType(String searchType)
-	{
-		this.searchType = searchType;
-	}
-	
-	/**
-	 * Sets the item selected by the user.
-	 * 
-	 * @param selectedItem
-	 *            the selectedItem to set
-	 */
-	public void setSelectedItem(Item selectedItem)
-	{
-		this.selectedItem = selectedItem;
-	}
-	
-	/**
-	 * Sets the value of the Simple Search textbox.
-	 * 
-	 * @param simpleSearchQuery
-	 *            (String) The simpleSearchQuery to set.
-	 */
-	public void setSimpleSearchQuery(String simpleSearchQuery)
-	{
-		this.simpleSearchQuery = simpleSearchQuery;
-	}
-	
-	/**
-	 * Sets the type results are filtered to. Should be an item type or "All".
-	 * 
-	 * @param typeFilter
-	 *            the typeFilter to set
-	 */
-	public void setTypeFilter(String typeFilter)
-	{
-		this.typeFilter = typeFilter;
-		this.resultsPage = 1;
-		this.simpleSearch();
-		this.errorMessages.renderMessages();
-	}
-	
-	/**
 	 * Executes a simple search, resets the search type drop-down list, and redirects the user to the search results page.
 	 */
-	public void simpleSearch()
+	public void performSimpleSearch()
 	{
 		// Ensure that an Indexing is not taking place
 		if (this.settingEjb.getBooleanSettingByName(Constants.SETTING_SEARCH_INDEXING_COMMENCED))
@@ -906,5 +837,91 @@ public class Search_Backing
 				}
 			}
 		}
+		
+		// Clear the textbox
+		this.simpleSearchQuery = "";
+	}
+	
+	/**
+	 * Allows the Page_Backing bean to be injected into this class.
+	 * 
+	 * @param pageBackingBean
+	 *            the pageBackingBean to set
+	 */
+	public void setPageBackingBean(Page_Backing pageBackingBean)
+	{
+		this.pageBackingBean = pageBackingBean;
+	}
+	
+	/**
+	 * Sets the page number of the results page to show.
+	 * 
+	 * @param resultsPage
+	 *            (int) The resultsPage to set.
+	 */
+	public void setResultsPage(int resultsPage)
+	{
+		this.resultsPage = resultsPage;
+		this.continueSearch();
+	}
+	
+	/**
+	 * Sets the search type.
+	 * 
+	 * @param searchType
+	 *            (String) The search type.
+	 */
+	public void setSearchType(String searchType)
+	{
+		this.searchType = searchType;
+	}
+	
+	/**
+	 * Sets the item selected by the user.
+	 * 
+	 * @param selectedItem
+	 *            the selectedItem to set
+	 */
+	public void setSelectedItem(Item selectedItem)
+	{
+		this.selectedItem = selectedItem;
+	}
+	
+	/**
+	 * Sets the value of the Simple Search textbox.
+	 * 
+	 * @param simpleSearchQuery
+	 *            (String) The simpleSearchQuery to set.
+	 */
+	public void setSimpleSearchQuery(String simpleSearchQuery)
+	{
+		this.simpleSearchQuery = simpleSearchQuery;
+	}
+	
+	/**
+	 * Sets the type results are filtered to. Should be an item type or "All".
+	 * 
+	 * @param typeFilter
+	 *            the typeFilter to set
+	 */
+	public void setTypeFilter(String typeFilter)
+	{
+		this.typeFilter = typeFilter;
+		this.resultsPage = 1;
+		this.simpleSearchQuery = this.originalSimpleSearchQuery;
+		this.performSimpleSearch();
+		this.errorMessages.renderMessages();
+	}
+	
+	/**
+	 * Action for the search button.
+	 */
+	public void simpleSearch()
+	{
+		// Reset properties that back the page
+		this.resultsPage = 1;
+		this.searchResults.clear();
+		this.originalSimpleSearchQuery = this.simpleSearchQuery;
+		this.performSimpleSearch();
 	}
 }

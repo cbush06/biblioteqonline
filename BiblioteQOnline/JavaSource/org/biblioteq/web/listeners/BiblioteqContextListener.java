@@ -97,6 +97,8 @@ public class BiblioteqContextListener implements ServletContextListener
 		        "Restricted_ItemRequestConfirmation.xhtml", "Restricted_Main_Navigation.xhtml", "Restricted_Header.xhtml"));
 		pageMap.put(Constants.PAGE_RESTRICTED_MYACCOUNT, new Page_Model(PageType.Restricted, "BiblioteQ Online",
 		        "Restricted_MyAccount.xhtml", "Restricted_Main_Navigation.xhtml", "Restricted_Header.xhtml"));
+		pageMap.put(Constants.PAGE_RESTRICTED_BROWSE, new Page_Model(PageType.Restricted, "BiblioteQ Online", "Restricted_Browse.xhtml",
+		        "Restricted_Main_Navigation.xhtml", "Restricted_Header.xhtml"));
 		
 		// Let's add all the Admin Pages and their attributes to the Page Map
 		pageMap.put(Constants.PAGE_ADMIN_INDEX, new Page_Model(PageType.Admin, "BiblioteQ Online", "Admin_Index.xhtml",

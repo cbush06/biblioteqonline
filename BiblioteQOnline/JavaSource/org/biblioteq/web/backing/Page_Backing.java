@@ -343,6 +343,17 @@ public class Page_Backing extends Screen_Backing
 	}
 	
 	/**
+	 * Navigates the user to the Restricted Section Browse page.
+	 * 
+	 * @return (String) Navigates the user to the "Browse" page and updates the browser.
+	 */
+	public String gotoRestrictedBrowse()
+	{
+		this.setRenderPage(Constants.PAGE_RESTRICTED_BROWSE);
+		return "update";
+	}
+	
+	/**
 	 * Navigates the user to the Restricted Section Index page.
 	 * 
 	 * @return (String) The navigation rule to go to the Restricted Index page.
