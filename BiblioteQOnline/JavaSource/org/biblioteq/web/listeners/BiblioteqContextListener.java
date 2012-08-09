@@ -21,6 +21,8 @@
  * ####################### 
  * 03 Mar 2012, Clinton Bush, 1.0.0,
  *    New file.
+ * 08 Aug 2012, Clinton Bush, 1.1.2,
+ * 	  Adjusted the page titles to work with the new title setting added to the administration settings.
  * 
  ********************************************************************************************************************************************************************************** 
  */
@@ -85,31 +87,31 @@ public class BiblioteqContextListener implements ServletContextListener
 		HashMap<String, Page_Model> pageMap = new HashMap<String, Page_Model>();
 		
 		// Let's add all the Restricted Pages and their attributes to the Page Map
-		pageMap.put(Constants.PAGE_RESTRICTED_INDEX, new Page_Model(PageType.Restricted, "BiblioteQ Online", "Restricted_Index.xhtml",
+		pageMap.put(Constants.PAGE_RESTRICTED_INDEX, new Page_Model(PageType.Restricted, "Home", "Restricted_Index.xhtml",
 		        "Restricted_Main_Navigation.xhtml", "Restricted_Header.xhtml"));
-		pageMap.put(Constants.PAGE_RESTRICTED_SEARCHRESULTS, new Page_Model(PageType.Restricted, "BiblioteQ Online",
+		pageMap.put(Constants.PAGE_RESTRICTED_SEARCHRESULTS, new Page_Model(PageType.Restricted, "Search Results",
 		        "Restricted_SearchResults.xhtml", "Restricted_Main_Navigation.xhtml", "Restricted_Header.xhtml"));
-		pageMap.put(Constants.PAGE_RESTRICTED_ITEMDETAILS, new Page_Model(PageType.Restricted, "BiblioteQ Online",
+		pageMap.put(Constants.PAGE_RESTRICTED_ITEMDETAILS, new Page_Model(PageType.Restricted, "Item Details",
 		        "Restricted_ItemDetails.xhtml", "Restricted_Main_Navigation.xhtml", "Restricted_Header.xhtml"));
-		pageMap.put(Constants.PAGE_RESTRICTED_ITEMREQUESTAGREEMENT, new Page_Model(PageType.Restricted, "BiblioteQ Online",
+		pageMap.put(Constants.PAGE_RESTRICTED_ITEMREQUESTAGREEMENT, new Page_Model(PageType.Restricted, "Request Agreement",
 		        "Restricted_ItemRequestAgreement.xhtml", "Restricted_Main_Navigation.xhtml", "Restricted_Header.xhtml"));
-		pageMap.put(Constants.PAGE_RESTRICTED_ITEMREQUESTCONFIRMATION, new Page_Model(PageType.Restricted, "BiblioteQ Online",
+		pageMap.put(Constants.PAGE_RESTRICTED_ITEMREQUESTCONFIRMATION, new Page_Model(PageType.Restricted, "Request Confirmation",
 		        "Restricted_ItemRequestConfirmation.xhtml", "Restricted_Main_Navigation.xhtml", "Restricted_Header.xhtml"));
-		pageMap.put(Constants.PAGE_RESTRICTED_MYACCOUNT, new Page_Model(PageType.Restricted, "BiblioteQ Online",
-		        "Restricted_MyAccount.xhtml", "Restricted_Main_Navigation.xhtml", "Restricted_Header.xhtml"));
-		pageMap.put(Constants.PAGE_RESTRICTED_BROWSE, new Page_Model(PageType.Restricted, "BiblioteQ Online", "Restricted_Browse.xhtml",
+		pageMap.put(Constants.PAGE_RESTRICTED_MYACCOUNT, new Page_Model(PageType.Restricted, "My Account", "Restricted_MyAccount.xhtml",
+		        "Restricted_Main_Navigation.xhtml", "Restricted_Header.xhtml"));
+		pageMap.put(Constants.PAGE_RESTRICTED_BROWSE, new Page_Model(PageType.Restricted, "Browse", "Restricted_Browse.xhtml",
 		        "Restricted_Main_Navigation.xhtml", "Restricted_Header.xhtml"));
 		
 		// Let's add all the Admin Pages and their attributes to the Page Map
-		pageMap.put(Constants.PAGE_ADMIN_INDEX, new Page_Model(PageType.Admin, "BiblioteQ Online", "Admin_Index.xhtml",
+		pageMap.put(Constants.PAGE_ADMIN_INDEX, new Page_Model(PageType.Admin, "Administration", "Admin_Index.xhtml",
 		        "Admin_Main_Navigation.xhtml", "Admin_Header.xhtml"));
-		pageMap.put(Constants.PAGE_ADMIN_SETTINGS, new Page_Model(PageType.Admin, "BiblioteQ Online", "Admin_Settings.xhtml",
+		pageMap.put(Constants.PAGE_ADMIN_SETTINGS, new Page_Model(PageType.Admin, "System Settings", "Admin_Settings.xhtml",
 		        "Admin_Main_Navigation.xhtml", "Admin_Header.xhtml"));
-		pageMap.put(Constants.PAGE_ADMIN_SETTINGS_SEARCH, new Page_Model(PageType.Admin, "BiblioteQ Online", "Admin_Settings_Search.xhtml",
+		pageMap.put(Constants.PAGE_ADMIN_SETTINGS_SEARCH, new Page_Model(PageType.Admin, "Search Settings", "Admin_Settings_Search.xhtml",
 		        "Admin_Main_Navigation.xhtml", "Admin_Header.xhtml"));
-		pageMap.put(Constants.PAGE_ADMIN_SETTINGS_SUMMARYPAGE, new Page_Model(PageType.Admin, "BiblioteQ Online",
+		pageMap.put(Constants.PAGE_ADMIN_SETTINGS_SUMMARYPAGE, new Page_Model(PageType.Admin, "Summary Page Settings",
 		        "Admin_Settings_SummaryPage.xhtml", "Admin_Main_Navigation.xhtml", "Admin_Header.xhtml"));
-		pageMap.put(Constants.PAGE_ADMIN_MANAGEUSERS, new Page_Model(PageType.Admin, "BiblioteQ Online", "Admin_ManageUsers.xhtml",
+		pageMap.put(Constants.PAGE_ADMIN_MANAGEUSERS, new Page_Model(PageType.Admin, "Manage Users", "Admin_ManageUsers.xhtml",
 		        "Admin_Main_Navigation.xhtml", "Admin_Header.xhtml"));
 		
 		// Add the pageMap to the context

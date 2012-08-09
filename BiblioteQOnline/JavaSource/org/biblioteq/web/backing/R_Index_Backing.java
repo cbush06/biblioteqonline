@@ -24,14 +24,17 @@
  * #######################
  * #      Revision       #
  * ####################### 
- * Apr 7, 2012, Clinton Bush, 1.0.0,
+ * Apr 07, 2012, Clinton Bush, 1.0.0,
  *    New file.
- * 
+ * Aug 08, 2012, Clinton Bush, 1.1.2,
+ *    Implemented Serializable.
+ *    
  ********************************************************************************************************************************************************************************** 
  */
 //@formatter:on
 package org.biblioteq.web.backing;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -58,8 +61,13 @@ import org.richfaces.component.UIExtendedDataTable;
  */
 @ManagedBean(name = "R_Index_Backing")
 @ViewScoped
-public class R_Index_Backing extends Screen_Backing
+public class R_Index_Backing extends Screen_Backing implements Serializable
 {
+	/**
+	 * GUID for implementing Serializable.
+	 */
+	private static final long serialVersionUID = -5366826744363313958L;
+	
 	/**
 	 * Get the LoanBusiness EJB.
 	 */

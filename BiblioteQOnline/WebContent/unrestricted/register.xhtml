@@ -24,9 +24,11 @@
  * #######################
  * #      Revision       #
  * ####################### 
- * Apr 5, 2012, Clinton Bush, 1.0.0,
+ * Apr 05, 2012, Clinton Bush, 1.0.0,
  *    New file.
- * 
+ * Aug 08, 2012, Clinton Bush, 1.1.2,
+ *    Adjusted the page title to change based on the system title setting.
+ *
  ********************************************************************************************************************************************************************************** 
  *
 -->
@@ -68,7 +70,7 @@
 				}
 			</script>
 		</ui:define>
-		<ui:param name="title" value="BiblioteQ Online"></ui:param>
+		<ui:param name="title" value="#{Page_Backing.renderPageTitle}"></ui:param>
 		<ui:define name="nav_area">
 			<div class="nav_item">
 				<div class="nav_item_content">
@@ -136,10 +138,10 @@
 				<a4j:outputPanel id="outPnlRegister1" layout="block" rendered="#{Register_Backing.registrationStep == 1}">
 					<h:panelGrid id="pnlGrid" styleClass="pnlGrid" columns="2" columnClasses="leftCol, rightCol" rowClasses="rowClass">
 						<h:outputText value="First Name:" />
-						<h:inputText id="txtFirstName" value="#{Register_Backing.txtFirstName}" style="font-family: Arial; font-size: 12pt; width: 90%;" required="true" requiredMessage="[First Name] is a required field."/>
+						<h:inputText id="txtFirstName" value="#{Register_Backing.txtFirstName}" style="font-family: Arial; font-size: 12pt; width: 90%;"/>
 						
 						<h:outputText value="Last Name:" />
-						<h:inputText id="txtLastName" value="#{Register_Backing.txtLastName}" style="font-family: Arial; font-size: 12pt; width: 90%;" required = "true" requiredMessage="[Last Name] is a required field."/>
+						<h:inputText id="txtLastName" value="#{Register_Backing.txtLastName}" style="font-family: Arial; font-size: 12pt; width: 90%;"/>
 						
 						<h:outputText value="Date of Birth:" />
 						<h:panelGroup>
@@ -159,31 +161,31 @@
 						<h:outputText value="Phone Number:" />
 						<h:panelGroup>
 							(
-								<h:inputText id="txtPhone1" value="#{Register_Backing.phone1}" style="font-family: Arial; font-size:12pt; width: 2em; text-align: center;" maxlength="3" required="true" requiredMessage="[Phone Area Code] is a required field.">
+								<h:inputText id="txtPhone1" value="#{Register_Backing.phone1}" style="font-family: Arial; font-size:12pt; width: 2em; text-align: center;" maxlength="3" required="true">
 									<f:validator for="txtPhone1" validatorId="IntegerValidator" />
 									<f:attribute name="FieldDescriptor" value="Phone Number Area Code" />
 								</h:inputText>
 							)
-							 	<h:inputText id="txtPhone2" value="#{Register_Backing.phone2}" style="font-family: Arial; font-size: 12pt; width: 2em; text-align: center;" maxlength="3" required="true" requiredMessage="[Phone Prefix] is a required field.">
+							 	<h:inputText id="txtPhone2" value="#{Register_Backing.phone2}" style="font-family: Arial; font-size: 12pt; width: 2em; text-align: center;" maxlength="3">
 							 		<f:validator for="txtPhone2" validatorId="IntegerValidator" />
 							 		<f:attribute name="FieldDescriptor" value="Phone Number Prefix" />
 							 	</h:inputText>
 							 	-
-							 	<h:inputText id="txtPhone3" value="#{Register_Backing.phone3}" style="font-family: Arial; font-size: 12pt; width: 3em; text-align: center;" maxlength="4" required="true" requiredMessage="[Phone Line Number] is a required field.">
+							 	<h:inputText id="txtPhone3" value="#{Register_Backing.phone3}" style="font-family: Arial; font-size: 12pt; width: 3em; text-align: center;" maxlength="4">
 							 		<f:validator for="txtPhone3" validatorId="IntegerValidator" />
 							 		<f:attribute name="FieldDescriptor" value="Phone Number Line Number" />
 							 	</h:inputText>
 						</h:panelGroup>
 						
 						<h:outputText value="ZIP Code:" />
-						<h:inputText id="txtZip" value="#{Register_Backing.zipCode}" style="font-family: Arial; font-size: 12pt; width: 6em; text-align: center;" maxlength="5" required="true" requiredMessage="[ZIP Code] is a required field.">
+						<h:inputText id="txtZip" value="#{Register_Backing.zipCode}" style="font-family: Arial; font-size: 12pt; width: 6em; text-align: center;" maxlength="5">
 							<f:validator for="txtZip" validatorId="IntegerValidator" />
 							<f:attribute name="FieldDescriptor" value="ZIP Code" />
 						</h:inputText>
 						
 						<h:outputText value="E-mail:" />
-						<h:inputText id="txtEmail" value="#{Register_Backing.email}" style="font-family: Arial; font-size: 12pt; width: 90%;" required="true" requiredMessage="[E-mail] is a required field." />
-						<a4j:commandButton id="btnSubmit1" value="Proceed..." action="#{Register_Backing.register}" limitRender="true" execute="mainForm:outPnlRegister#{Register_Backing.registrationStep}" render="@all" rendered="#{Register_Backing.registrationStep lt 3}"/>
+						<h:inputText id="txtEmail" value="#{Register_Backing.email}" style="font-family: Arial; font-size: 12pt; width: 90%;" />
+						<a4j:commandButton id="btnSubmit1" type="button" value="Proceed..." action="#{Register_Backing.register}" limitRender="true" execute="mainForm:outPnlRegister#{Register_Backing.registrationStep}" render="@all" rendered="#{Register_Backing.registrationStep lt 3}"/>
 					</h:panelGrid>
 				</a4j:outputPanel>
 				<a4j:outputPanel id="outPnlRegister2" layout="block" rendered="#{Register_Backing.registrationStep == 2}" >
@@ -200,7 +202,7 @@
 						<h:outputText value="Verify Password:" />
 						<h:inputSecret id="txtVerifyPassword" value="#{Register_Backing.txtVerifyPassword}" style="font-family: Arial; font-size: 12pt; width: 90%;" required = "true" requiredMessage="[Verify Password] is a required field."/>
 					</h:panelGrid>
-					<a4j:commandButton id="btnSubmit2" value="Register..." onclick="encryptPasswords()" action="#{Register_Backing.register}" limitRender="true" execute="mainForm:outPnlRegister#{Register_Backing.registrationStep}" render="@all" rendered="#{Register_Backing.registrationStep lt 3}"/>
+					<a4j:commandButton id="btnSubmit2" type="button" value="Register..." onclick="encryptPasswords()" action="#{Register_Backing.register}" limitRender="true" execute="mainForm:outPnlRegister#{Register_Backing.registrationStep}" render="@all" rendered="#{Register_Backing.registrationStep lt 3}"/>
 				</a4j:outputPanel>
 				<a4j:outputPanel id="outPnlRegister3" layout="block" rendered="#{Register_Backing.registrationStep == 3}">
 					<p style="font-family: Arial; font-weight: bold; text-align: center;">Success!</p>

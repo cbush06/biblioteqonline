@@ -27,16 +27,21 @@
  * ####################### 
  * Mar 3, 2012, Clinton Bush, 1.0.0,
  *    New file.
- * 
+ * Aug 08, 2012, Clinton Bush, 1.1.2,
+ *    Implemented the Serializable interface.
+ *    
  ********************************************************************************************************************************************************************************** 
  */
 //@formatter:on
 
 package org.biblioteq.web.backing;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
@@ -47,6 +52,7 @@ import javax.faces.event.AjaxBehaviorEvent;
 import org.apache.log4j.Logger;
 import org.biblioteq.ejb.entities.User;
 import org.biblioteq.ejb.interfaces.Item;
+import org.biblioteq.ejb.interfaces.SettingBusinessLocal;
 import org.biblioteq.web.common.Constants;
 import org.biblioteq.web.model.Page_Model;
 import org.biblioteq.web.model.Page_Model.PageType;
@@ -58,8 +64,13 @@ import org.biblioteq.web.security.Login_Security;
  */
 @ManagedBean(name = "Page_Backing")
 @SessionScoped
-public class Page_Backing extends Screen_Backing
+public class Page_Backing extends Screen_Backing implements Serializable
 {
+	/**
+	 * GUID for implementing Serializable
+	 */
+	private static final long serialVersionUID = -8874926569573461089L;
+	
 	/**
 	 * Get the logger.
 	 */
@@ -70,6 +81,12 @@ public class Page_Backing extends Screen_Backing
 	 */
 	@ManagedProperty("#{Login_Security}")
 	private Login_Security loginBean;
+	
+	/**
+	 * Get a copy of the Setting EJB.
+	 */
+	@EJB(name = "SettingBusiness")
+	private SettingBusinessLocal settingEjb;
 	
 	/**
 	 * Wrapper of FacesMessage framework for handling error messages.
@@ -100,8 +117,12 @@ public class Page_Backing extends Screen_Backing
 	 * These fields back the info popup.
 	 */
 	private String infoTitle = "";
-	
 	private String infoMessage = "";
+	
+	/**
+	 * The title of the entire system. This is only retrieved when the session is created to save trips to the database.
+	 */
+	private String systemTitle = "";
 	
 	/**
 	 * The constructor will obtain the PageMap from the Application Map. The PageMap is constructed by a Context Listener when the application is first loaded; thus, it must be
@@ -166,6 +187,18 @@ public class Page_Backing extends Screen_Backing
 		}
 		
 		return this.currentUser;
+	}
+	
+	public String getHeaderImageFilePath()
+	{
+		if (this.settingEjb.getBooleanSettingByName(Constants.SETTING_SYSTEM_CUSTOM_HEADER))
+		{
+			return "customimgs/header." + this.settingEjb.getStringSettingByName(Constants.SETTING_SYSTEM_HEADER_TYPE);
+		}
+		else
+		{
+			return "imgs/header_logo.jpg";
+		}
 	}
 	
 	/**
@@ -286,11 +319,27 @@ public class Page_Backing extends Screen_Backing
 	 */
 	public String getRenderPageTitle()
 	{
+		String pageTitle = this.getSystemTitle();
+		
 		if (this.pageMap.containsKey(this.renderPage))
 		{
-			this.pageMap.get(this.renderPage).getTitle();
+			if (pageTitle.length() > 0)
+			{
+				pageTitle += " - ";
+			}
+			pageTitle += this.pageMap.get(this.renderPage).getTitle();
 		}
-		return "";
+		return pageTitle;
+	}
+	
+	/**
+	 * Returns the System Title used in the title bar.
+	 * 
+	 * @return (String) The systemTitle.
+	 */
+	public String getSystemTitle()
+	{
+		return this.systemTitle;
 	}
 	
 	/**
@@ -367,6 +416,12 @@ public class Page_Backing extends Screen_Backing
 		}
 		Page_Backing.log.error("Invalid attempt to access Restricted section!");
 		return "logout";
+	}
+	
+	@PostConstruct
+	public void init()
+	{
+		this.setSystemTitle(this.settingEjb.getStringSettingByName(Constants.SETTING_SYSTEM_TITLE));
 	}
 	
 	/**
@@ -479,6 +534,17 @@ public class Page_Backing extends Screen_Backing
 		{
 			Page_Backing.log.error("Selected Item is null");
 		}
+	}
+	
+	/**
+	 * Sets the System Title used in the title bar.
+	 * 
+	 * @param systemTitle
+	 *            the systemTitle to set
+	 */
+	public void setSystemTitle(String systemTitle)
+	{
+		this.systemTitle = systemTitle;
 	}
 	
 	/**

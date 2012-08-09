@@ -38,6 +38,11 @@
   	<servlet-class>org.biblioteq.web.servlets.FrontCoverServlet</servlet-class>
   	<load-on-startup>1</load-on-startup>
   </servlet>
+  <servlet>
+  	<servlet-name>CustomImageServlet</servlet-name>
+  	<servlet-class>org.biblioteq.web.servlets.CustomImageServlet</servlet-class>
+  	<load-on-startup>1</load-on-startup>
+  </servlet>
   <servlet-mapping>
   	<servlet-name>Log Out Servlet</servlet-name>
   	<url-pattern>/logout/*</url-pattern>
@@ -61,6 +66,10 @@
   <servlet-mapping>
   	<servlet-name>FrontCoverServlet</servlet-name>
   	<url-pattern>/images/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>CustomImageServlet</servlet-name>
+  	<url-pattern>/customimgs/*</url-pattern>
   </servlet-mapping>
   <listener>
   	<description>Listener to handle initialization and passification of the application.</description>

@@ -26,12 +26,17 @@
  * ####################### 
  * 03 Mar 2012, Clinton Bush, 1.0.0,
  *    New file.
+ *    
+ * 08 Aug 2012, Clinton Bush, 1.1.2,
+ *    Implemented the Serializable interface.
  * 
  ********************************************************************************************************************************************************************************** 
  */
 //@formatter:on
 
 package org.biblioteq.web.backing;
+
+import java.io.Serializable;
 
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -48,8 +53,13 @@ import org.biblioteq.web.security.Login_Security;
 
 @ManagedBean(name = "Index_Backing")
 @ViewScoped
-public class Index_Backing extends Screen_Backing
+public class Index_Backing extends Screen_Backing implements Serializable
 {
+	/**
+	 * GUID for implementing Serializable
+	 */
+	private static final long serialVersionUID = -2222049632808163955L;
+	
 	/**
 	 * Get the logger.
 	 */

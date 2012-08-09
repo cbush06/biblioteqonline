@@ -43,52 +43,61 @@
 	<ui:composition>
 		<div class="subHeaderBox">
 			<div class="sectionLeft">
-				Search
+				Browse
 			</div>
 			<div class="sectionOther">
-				About # results
+				About #{R_Browse_Backing.totalHits} results
 			</div>
 		</div>
 		<table>
 			<tr>
 				<td valign="top">
-					<div class="subNavBox">
-						<table width="100%" cellpadding="0" cellspacing="1" style="float: left; clear: both;">
-							<tr>
-								<td>
-									<a4j:commandLink value="Subject" render="@all" styleClass="#{R_Browse_Backing.typeFilter == 'Subject' ? 'subLinks highlightSubLinksSelected' : 'subLinks highlightSubLinks'}">
-										<a4j:param assignTo="#{R_Browse_Backing.typeFilter}" value="Subject" />
-									</a4j:commandLink>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<a4j:commandLink value="Type" render="@all" styleClass="#{R_Browse_Backing.typeFilter == 'Type' ? 'subLinks highlightSubLinksSelected' : 'subLinks highlightSubLinks'}">
-										<a4j:param assignTo="#{R_Browse_Backing.typeFilter}" value="Type" />
-									</a4j:commandLink>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<a4j:commandLink value="Creator" render="@all" styleClass="#{R_Browse_Backing.typeFilter == 'Creator' ? 'subLinks highlightSubLinksSelected' : 'subLinks highlightSubLinks'}">
-										<a4j:param assignTo="#{R_Browse_Backing.typeFilter}" value="Creator" />
-									</a4j:commandLink>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<a4j:commandLink value="Location" render="@all" styleClass="#{R_Browse_Backing.typeFilter == 'Location' ? 'subLinks highlightSubLinksSelected' : 'subLinks highlightSubLinks'}">
-										<a4j:param assignTo="#{R_Browse_Backing.typeFilter}" value="Location" />
-									</a4j:commandLink>
-								</td>
-							</tr>
-						</table>
-					</div>
+					<ui:include src="/restricted/navigation/Restricted_Browse_Sub_Navigation.xhtml" />
 				</td>
 				<td valign="top">
 					<div class="subContentBox">
-
+						<ui:repeat value="#{R_Browse_Backing.resultsList}" var="item">
+							<div class="resultTableDiv">
+								<table class="resultTable">
+									<tr>
+										<td style="text-align: left;">
+											<h:commandLink  action="#{R_Browse_Backing.conductSearchForItem}">
+												<f:setPropertyActionListener target="#{R_Browse_Backing.selectedItem}" value="#{item}" />
+												<h:panelGroup rendered="#{R_Browse_Backing.typeFilter != 'Location'}">
+													#{item.term}
+												</h:panelGroup>
+												<h:panelGroup rendered="#{R_Browse_Backing.typeFilter == 'Location'}">
+													#{item.term} (#{item.type})
+												</h:panelGroup>
+											</h:commandLink>
+										</td>
+									</tr>
+									<tr>
+										<td style="text-align: left;">
+											<span class="resultTableDetails">
+												<h:outputText value="Approx. #{item.total} result(s)." />
+											</span>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</ui:repeat>
 						
+						<div class="resultPaginationDiv">
+							<table class="resultPaginationTable" align="center">
+								<tr>
+									<ui:repeat value="#{R_Browse_Backing.pageNumbers}" var="pageNum">
+										<td>
+											<a4j:commandLink execute="@all" render="@all" styleClass="#{(R_Browse_Backing.resultsPage == pageNum.value)? 'selected' : ''}">
+												<h:outputText value="#{pageNum.display}" />
+												<a4j:param assignTo="#{R_Browse_Backing.resultsPage}" value="#{pageNum.value}"/>
+												<a4j:actionListener listener="#{R_Browse_Backing.getNextResultSet}" />
+											</a4j:commandLink>
+										</td>
+									</ui:repeat>
+								</tr>
+							</table>
+						</div>
 					</div>
 				</td>
 			</tr>

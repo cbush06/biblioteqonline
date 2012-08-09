@@ -27,11 +27,18 @@
  * Jun 30, 2012, Clinton Bush, 1.0.0,
  *    New file.
  * 
+ * Aug 07, 2012, Clinton Bush, 1.1.2,
+ *    Added setting for the System Title and Header.
+ * 
  ********************************************************************************************************************************************************************************** 
  */
 //@formatter:on
 package org.biblioteq.web.backing;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
@@ -44,6 +51,9 @@ import javax.faces.event.ActionEvent;
 import org.apache.log4j.Logger;
 import org.biblioteq.ejb.interfaces.SettingBusinessLocal;
 import org.biblioteq.web.common.Constants;
+import org.biblioteq.web.model.ValidationMessage_Model;
+import org.richfaces.event.FileUploadEvent;
+import org.richfaces.model.UploadedFile;
 
 /**
  * This backing bean provides all the methods required by the System Settings page.
@@ -68,12 +78,20 @@ public class A_Settings_System_Backing implements Serializable
 	/**
 	 * Variables backing the form fields.
 	 */
+	private boolean showImageUpload = false;
+	private String systemTitle = "";
 	private boolean systemEnabled = true;
+	private boolean systemHeaderUseDefault = true;
 	private String systemDisabledMessage = "";
 	private boolean allowOnlineRequests = true;
 	private String agreementTermsMessage = "";
 	private String agreementCheckboxMessage = "";
 	private String requestConfirmationMessage = "";
+	
+	/**
+	 * Error handler.
+	 */
+	private ValidationMessage_Model errorMessages = new ValidationMessage_Model();
 	
 	/**
 	 * Import the SettingBusiness EJB.
@@ -128,17 +146,29 @@ public class A_Settings_System_Backing implements Serializable
 	}
 	
 	/**
+	 * Returns the title shown in the title bar for the entire web site.
+	 * 
+	 * @return (String) The systemTitle.
+	 */
+	public String getSystemTitle()
+	{
+		return this.systemTitle;
+	}
+	
+	/**
 	 * This method pre-populates the settings on this page from the database.
 	 */
 	@PostConstruct
 	public void init()
 	{
+		this.setSystemTitle(this.settingEjb.getStringSettingByName(Constants.SETTING_SYSTEM_TITLE));
 		this.setSystemEnabled(this.settingEjb.getBooleanSettingByName(Constants.SETTING_SYSTEM_ENABLED));
 		this.setSystemDisabledMessage(this.settingEjb.getStringSettingByName(Constants.SETTING_SYSTEM_DISABLED_MESSAGE));
 		this.setAllowOnlineRequests(this.settingEjb.getBooleanSettingByName(Constants.SETTING_ALLOW_ONLINE_REQUEST));
 		this.setAgreementTermsMessage(this.settingEjb.getStringSettingByName(Constants.SETTING_REQUEST_AGREEMENT_TERMS));
 		this.setAgreementCheckboxMessage(this.settingEjb.getStringSettingByName(Constants.SETTING_REQUEST_AGREEMENT_CHECKBOX_MESSAGE));
 		this.setRequestConfirmationMessage(this.settingEjb.getStringSettingByName(Constants.SETTING_REQUEST_CONFIRMATION_MESSAGE));
+		this.setSystemHeaderUseDefault(!(this.settingEjb.getBooleanSettingByName(Constants.SETTING_SYSTEM_CUSTOM_HEADER)));
 	}
 	
 	/**
@@ -152,6 +182,16 @@ public class A_Settings_System_Backing implements Serializable
 	}
 	
 	/**
+	 * If true, the image upload box will be shown.
+	 * 
+	 * @return (boolean) The showImageUpload.
+	 */
+	public boolean isShowImageUpload()
+	{
+		return this.showImageUpload;
+	}
+	
+	/**
 	 * Returns the value of the System Enabled Setting.
 	 * 
 	 * @return (boolean) The cbSystemEnabled.
@@ -159,6 +199,16 @@ public class A_Settings_System_Backing implements Serializable
 	public boolean isSystemEnabled()
 	{
 		return this.systemEnabled;
+	}
+	
+	/**
+	 * Returns true if the user has selected to use the default header.
+	 * 
+	 * @return (boolean) The systemHeaderUseDefault.
+	 */
+	public boolean isSystemHeaderUseDefault()
+	{
+		return this.systemHeaderUseDefault;
 	}
 	
 	/**
@@ -170,12 +220,17 @@ public class A_Settings_System_Backing implements Serializable
 	public void save(ActionEvent e)
 	{
 		// Persist the settings
+		this.settingEjb.saveSetting(Constants.SETTING_SYSTEM_TITLE, this.systemTitle);
 		this.settingEjb.saveSetting(Constants.SETTING_SYSTEM_ENABLED, String.valueOf(this.systemEnabled));
 		this.settingEjb.saveSetting(Constants.SETTING_SYSTEM_DISABLED_MESSAGE, this.systemDisabledMessage);
 		this.settingEjb.saveSetting(Constants.SETTING_ALLOW_ONLINE_REQUEST, String.valueOf(this.allowOnlineRequests));
 		this.settingEjb.saveSetting(Constants.SETTING_REQUEST_AGREEMENT_TERMS, this.agreementTermsMessage);
 		this.settingEjb.saveSetting(Constants.SETTING_REQUEST_AGREEMENT_CHECKBOX_MESSAGE, this.agreementCheckboxMessage);
 		this.settingEjb.saveSetting(Constants.SETTING_REQUEST_CONFIRMATION_MESSAGE, this.requestConfirmationMessage);
+		this.settingEjb.saveSetting(Constants.SETTING_SYSTEM_CUSTOM_HEADER, String.valueOf(!(this.systemHeaderUseDefault)));
+		
+		// Update the system title in the Page_Backing Bean
+		this.pageBackingBean.setSystemTitle(this.systemTitle);
 		
 		// Display the Successful Save dialog
 		this.pageBackingBean.showInfoMessage("Success!", "Your changes have been successfully saved!");
@@ -237,6 +292,17 @@ public class A_Settings_System_Backing implements Serializable
 	}
 	
 	/**
+	 * Sets the value determining if the image upload box is shown.
+	 * 
+	 * @param showImageUpload
+	 *            (boolean) The showImageUpload to set.
+	 */
+	public void setShowImageUpload(boolean showImageUpload)
+	{
+		this.showImageUpload = showImageUpload;
+	}
+	
+	/**
 	 * Sets the System Disabled Message.
 	 * 
 	 * @param systemDisabledMessage
@@ -256,5 +322,110 @@ public class A_Settings_System_Backing implements Serializable
 	public void setSystemEnabled(boolean systemEnabled)
 	{
 		this.systemEnabled = systemEnabled;
+	}
+	
+	/**
+	 * Sets if the user has selected to use the default header.
+	 * 
+	 * @param systemHeaderUseDefault
+	 *            (boolean) The systemHeaderUseDefault to set.
+	 */
+	public void setSystemHeaderUseDefault(boolean systemHeaderUseDefault)
+	{
+		this.systemHeaderUseDefault = systemHeaderUseDefault;
+	}
+	
+	/**
+	 * Sets the title shown in the title bar for the entire web site.
+	 * 
+	 * @param systemTitle
+	 *            (String) The systemTitle to set.
+	 */
+	public void setSystemTitle(String systemTitle)
+	{
+		this.systemTitle = systemTitle;
+	}
+	
+	/**
+	 * Receives a custom Header Image file.
+	 * 
+	 * @param e
+	 *            (FileUploadEvent) The event generated by the upload action.
+	 */
+	public void uploadListener(FileUploadEvent e)
+	{
+		UploadedFile item = e.getUploadedFile();
+		File saveDirectory = new File(File.separator + Constants.PATH_CUSTOM_IMAGES + File.separator);
+		File saveFile = null;
+		FileOutputStream os = null;
+		String fileExtension = "";
+		InputStream is = null;
+		byte buffer[] = new byte[512];
+		
+		// Ensure our directory exists
+		if (!(saveDirectory.exists()))
+		{
+			saveDirectory.mkdir();
+		}
+		
+		// Attempt to save the image
+		if (item.getContentType().equals("image/jpg") || item.getContentType().equals("image/jpeg")
+		        || item.getContentType().equals("image/gif") || item.getContentType().equals("image/png"))
+		{
+			//@formatter:off
+			if (item.getContentType().equals("image/jpg") || item.getContentType().equals("image/jpeg"))
+			{
+				fileExtension = "jpg";
+				saveFile = new File(File.separator + Constants.PATH_CUSTOM_IMAGES + File.separator + "header." + fileExtension);
+			}
+			else if (item.getContentType().equals("image/gif"))
+			{
+				fileExtension = "gif";
+				saveFile = new File(File.separator + Constants.PATH_CUSTOM_IMAGES + File.separator + "header." + fileExtension);
+			}
+			else
+			{
+				fileExtension = "png";
+				saveFile = new File(File.separator + Constants.PATH_CUSTOM_IMAGES + File.separator + "header." + fileExtension);
+			}
+			//@formatter:on
+			
+			try
+			{
+				// If the file doesn't exist, create it
+				if (!(saveFile.exists()))
+				{
+					A_Settings_System_Backing.log.info(saveFile.getCanonicalPath());
+					saveFile.createNewFile();
+				}
+				
+				// Open our I/O Streams
+				os = new FileOutputStream(saveFile);
+				is = item.getInputStream();
+				
+				// Save the file to disk
+				while (is.read(buffer, 0, buffer.length) > 0)
+				{
+					os.write(buffer);
+				}
+				
+				// Close the streams
+				os.close();
+				is.close();
+			}
+			catch (IOException e1)
+			{
+				A_Settings_System_Backing.log.error("An error occurred while copying the file to disk.");
+				e1.printStackTrace();
+			}
+			
+			// Update the header type setting
+			this.settingEjb.saveSetting(Constants.SETTING_SYSTEM_HEADER_TYPE, fileExtension);
+		}
+		else
+		{
+			this.errorMessages.addMessage("Only JPEG, GIF, or PNG files are allowed as the custom header.");
+			this.errorMessages.renderMessages();
+		}
 	}
 }

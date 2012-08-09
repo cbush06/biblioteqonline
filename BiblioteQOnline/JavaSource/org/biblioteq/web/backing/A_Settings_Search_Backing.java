@@ -24,9 +24,12 @@
  * #######################
  * #      Revision       #
  * ####################### 
- * Jun 3, 2012, Clinton Bush, 1.0.0,
+ * Jun 03, 2012, Clinton Bush, 1.0.0,
  *    New file.
- * 
+ *    
+ * Aug 08, 2012, Clinton Bush, 1.1.2,
+ *    Added settings for browsing.
+ *    
  ********************************************************************************************************************************************************************************** 
  */
 //@formatter:on
@@ -84,6 +87,7 @@ public class A_Settings_Search_Backing implements Serializable
 	private ValidationMessage_Model validationMessages = new ValidationMessage_Model();
 	
 	private String resultsPerPage = "";
+	private String browseResultsPerPage = "";
 	
 	private String showTypeIcons = "";
 	private String allowNonUserSearch = "";
@@ -121,6 +125,16 @@ public class A_Settings_Search_Backing implements Serializable
 	}
 	
 	/**
+	 * Returns the results per page setting for browsing.
+	 * 
+	 * @return (String) The browseResultsPerPage.
+	 */
+	public String getBrowseResultsPerPage()
+	{
+		return this.browseResultsPerPage;
+	}
+	
+	/**
 	 * Returns the value of "Results Per Page".
 	 * 
 	 * @return (String) The resultsPerPage value.
@@ -147,6 +161,7 @@ public class A_Settings_Search_Backing implements Serializable
 	public void init()
 	{
 		this.resultsPerPage = this.settingEjb.getSettingByName(Constants.SETTING_SEARCH_RESULTS_PER_PAGE).getValue();
+		this.browseResultsPerPage = this.settingEjb.getSettingByName(Constants.SETTING_SEARCH_BROWSE_PER_PAGE).getValue();
 		this.showTypeIcons = this.settingEjb.getSettingByName(Constants.SETTING_SEARCH_SHOW_TYPE_ICONS).getValue();
 		this.allowNonUserSearch = this.settingEjb.getSettingByName(Constants.SETTING_SEARCH_ALLOW_NON_USERS).getValue();
 		this.autoIndexing = this.settingEjb.getSettingByName(Constants.SETTING_SEARCH_AUTO_INDEXING).getValue();
@@ -166,6 +181,7 @@ public class A_Settings_Search_Backing implements Serializable
 		{
 			// Persist the settings
 			this.settingEjb.saveSetting(Constants.SETTING_SEARCH_RESULTS_PER_PAGE, this.resultsPerPage);
+			this.settingEjb.saveSetting(Constants.SETTING_SEARCH_BROWSE_PER_PAGE, this.browseResultsPerPage);
 			this.settingEjb.saveSetting(Constants.SETTING_SEARCH_SHOW_TYPE_ICONS, this.showTypeIcons);
 			this.settingEjb.saveSetting(Constants.SETTING_SEARCH_ALLOW_NON_USERS, this.allowNonUserSearch);
 			this.settingEjb.saveSetting(Constants.SETTING_SEARCH_AUTO_INDEXING, this.autoIndexing);
@@ -215,6 +231,17 @@ public class A_Settings_Search_Backing implements Serializable
 	}
 	
 	/**
+	 * Sets the results per page setting for browsing.
+	 * 
+	 * @param browseResultsPerPage
+	 *            (String) The browseResultsPerPage to set.
+	 */
+	public void setBrowseResultsPerPage(String browseResultsPerPage)
+	{
+		this.browseResultsPerPage = browseResultsPerPage;
+	}
+	
+	/**
 	 * Used to inject the Page_Backing.java bean into this class.
 	 * 
 	 * @param pageBackingBean
@@ -261,6 +288,13 @@ public class A_Settings_Search_Backing implements Serializable
 		if (Integer.parseInt(this.resultsPerPage) < 5)
 		{
 			this.validationMessages.addMessage("The results per page can be no less than 5.");
+			isValidated = false;
+		}
+		
+		// Validate the Browse Results Per Page
+		if (Integer.parseInt(this.browseResultsPerPage) < 5)
+		{
+			this.validationMessages.addMessage("The browse results per page can be no less than 5.");
 			isValidated = false;
 		}
 		

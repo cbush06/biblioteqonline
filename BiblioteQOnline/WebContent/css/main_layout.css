@@ -24,8 +24,11 @@
  * #######################
  * #      Revision       #
  * ####################### 
- * Apr 5, 2012, Clinton Bush, 1.0.0,
- *    New file.
+ * Apr 05, 2012, Clinton Bush, 1.0.0,
+ *    New file. 
+ * Aug 07, 2012, Clinton Bush, 1.1.2,
+ *    Added class for using with command links in the controls section of a popup. Removed the header backround-image setting
+ *    so it will work with the new custom image capabilities.
  * 
  ********************************************************************************************************************************************************************************** 
  */
@@ -63,7 +66,6 @@ body {
 	float: left;
 	clear: none;
 	
-	background-image: url('../imgs/header_logo.jpg');
 	background-position: center left;
 	background-repeat: no-repeat;
 }
@@ -308,6 +310,18 @@ body {
 	
 	background-image: url('../imgs/nav_item_bg_far_right.jpg');
 	background-repeat: repeat-y;
+}
+
+.popUpControl A {
+	color: #FFFFFF;
+}
+
+.popUpControl A:active {
+	color: #FFFFFF;
+}
+
+.popupControl A:visited {
+	color: #FFFFFF;
 }
 
 .regularText {

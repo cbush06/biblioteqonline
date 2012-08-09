@@ -26,7 +26,9 @@
  * ####################### 
  * Jun 10, 2012, Clinton Bush, 1.0.0,
  *    New file.
- * 
+ * Aug 08, 2012, Clinton Bush, 1.1.2,
+ *    Adjusted the page title to change based on the system title setting.
+ *
  ********************************************************************************************************************************************************************************** 
  *
 -->
@@ -44,7 +46,7 @@
 		<ui:define name="head">
 		</ui:define>
 		
-		<ui:param name="title" value="BiblioteQ Online"></ui:param>
+		<ui:param name="title" value="#{Page_Backing.renderPageTitle}"></ui:param>
 		
 		<ui:define name="nav_area">
 			<div class="nav_item">

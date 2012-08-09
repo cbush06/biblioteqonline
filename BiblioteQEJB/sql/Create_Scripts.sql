@@ -23,11 +23,13 @@
  * #######################
  * #      Revision       #
  * ####################### 
- * May 6, 2012, Clinton Bush, 1.0.0,
+ * May 06, 2012, Clinton Bush, 1.0.0,
  *    New file.
  * May 26, 2012, Clinton Bush, 1.0.0,
  *    Added the CREATE script for online_setting.
- * 
+ * Aug 02, 2012, Clinton Bush, 1.1.2,
+ * 	  Added CREATE scripts for tables used for browsing items. Added several settings.
+ *
  ********************************************************************************************************************************************************************************** 
  */
 CREATE TABLE online_user (
@@ -76,3 +78,29 @@ INSERT INTO online_setting (name, value) VALUES('system_disabled_message', 'We a
 INSERT INTO online_setting (name, value) VALUES('request_agreement_terms', 'See library staff for terms.');
 INSERT INTO online_setting (name, value) VALUES('request_agreement_checkbox_message', 'I agree to the terms above.');
 INSERT INTO online_setting (name, value) VALUES('request_confirmation_message', 'Your Request has been Successfully Placed!');
+
+/*
+ * UPGRADE - 1.1.2
+ */
+CREATE TABLE creator_index (
+	term			text,
+	total			bigint,
+	PRIMARY KEY		(term)
+)
+WITH (
+	OIDS=FALSE
+);
+
+CREATE TABLE subject_index (
+	term			text,
+	total			bigint,
+	PRIMARY KEY		(term)
+)
+WITH (
+	OIDS=FALSE
+);
+
+INSERT INTO online_setting (name, value) VALUES('search_browse_per_page', '10');
+INSERT INTO online_setting (name, value) VALUES('system_title', 'BiblioteQ Online');
+INSERT INTO online_setting (name, value) VALUES('system_custom_header', 'false');
+INSERT INTO online_setting (name, value) VALUES('system_header_type', 'jpg');

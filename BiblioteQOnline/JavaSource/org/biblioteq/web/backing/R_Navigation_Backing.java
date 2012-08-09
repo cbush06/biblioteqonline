@@ -24,13 +24,17 @@
  * #######################
  * #      Revision       #
  * ####################### 
- * May 9, 2012, Clinton Bush, 1.0.0,
+ * May 09, 2012, Clinton Bush, 1.0.0,
  *    New file.
- * 
+ * Aug 08, 2012, Clinton Bush, 1.1.2,
+ *    Implemented Serializable.
+ *    
  ********************************************************************************************************************************************************************************** 
  */
 //@formatter:on
 package org.biblioteq.web.backing;
+
+import java.io.Serializable;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -45,8 +49,13 @@ import org.apache.log4j.Logger;
  */
 @ManagedBean(name = "R_Navigation_Backing")
 @SessionScoped
-public class R_Navigation_Backing
+public class R_Navigation_Backing implements Serializable
 {
+	/**
+	 * GUID for implementing Serializable.
+	 */
+	private static final long serialVersionUID = 2199015107759948344L;
+	
 	/**
 	 * Get the logger.
 	 */

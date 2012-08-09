@@ -26,12 +26,15 @@
  * ####################### 
  * Apr 5, 2012, Clinton Bush, 1.0.0,
  *    New file.
- * 
+ * Aug 08, 2012, Clinton Bush, 1.1.2,
+ *    Implemented Serializable.
+ *    
  ********************************************************************************************************************************************************************************** 
  */
 //@formatter:on
 package org.biblioteq.web.backing;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -56,8 +59,13 @@ import org.biblioteq.web.model.ValidationMessage_Model;
  */
 @ManagedBean(name = "Register_Backing")
 @ViewScoped
-public class Register_Backing extends Screen_Backing
+public class Register_Backing extends Screen_Backing implements Serializable
 {
+	/**
+	 * GUID for implementing Serializable.
+	 */
+	private static final long serialVersionUID = -817499443165951662L;
+	
 	/**
 	 * Get the logger.
 	 */
@@ -516,12 +524,31 @@ public class Register_Backing extends Screen_Backing
 		// Validation for Step 1
 		if (this.registrationStep == 1)
 		{
+			if (this.txtFirstName.length() < 1)
+			{
+				this.errorMsg.addMessage("[First Name] is a required field.");
+				returnVal = false;
+			}
+			if (this.txtLastName.length() < 1)
+			{
+				this.errorMsg.addMessage("[Last Name] is a required field.");
+				returnVal = false;
+			}
 			if (this.phone1.length() != 3 || this.phone2.length() != 3 || this.phone3.length() != 4)
 			{
 				this.errorMsg.addMessage("A valid phone number is required.");
 				returnVal = false;
 			}
-			
+			if (this.zipCode.length() < 5)
+			{
+				this.errorMsg.addMessage("[ZIP Code] is a required field.");
+				returnVal = false;
+			}
+			if (this.email.length() < 1)
+			{
+				this.errorMsg.addMessage("[E-mail] is a required field.");
+				returnVal = false;
+			}
 			// Verify the information if everything is validated
 			if (returnVal)
 			{

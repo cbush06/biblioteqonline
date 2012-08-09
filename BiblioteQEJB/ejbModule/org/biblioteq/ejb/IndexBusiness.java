@@ -19,13 +19,17 @@
  * #######################
  * #       Purpose       #
  * #######################
- *
+ * This EJB provides access to various methods used when indexing the database.
  *
  * #######################
  * #      Revision       #
  * ####################### 
- * Jun 7, 2012, Clinton Bush, 1.0.0,
+ * Jun 07, 2012, Clinton Bush, 1.0.0,
  *    New file.
+ * Aug 02, 2012, Clinton Bush, 1.1.2,
+ * 	  Added methods to be used for indexing creators and subjects. Also added methods to
+ * 	  retrieve a count of items of a particular type and a count of items in a particular
+ *    location. 
  * 
  ********************************************************************************************************************************************************************************** 
  */
@@ -44,14 +48,20 @@ import javax.ejb.Stateful;
 import javax.ejb.StatefulTimeout;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
+import org.biblioteq.ejb.entities.CreatorIndexItem;
+import org.biblioteq.ejb.entities.Location;
+import org.biblioteq.ejb.entities.SubjectIndexItem;
 import org.biblioteq.ejb.interfaces.IndexBusinessLocal;
 import org.biblioteq.ejb.interfaces.IndexBusinessRemote;
 import org.biblioteq.ejb.interfaces.Item;
+import org.biblioteq.ejb.model.BrowseItem;
 
 /**
  * @author Clint Bush
@@ -61,6 +71,11 @@ import org.biblioteq.ejb.interfaces.Item;
 @StatefulTimeout(unit = TimeUnit.DAYS, value = 1)
 public class IndexBusiness implements IndexBusinessLocal, IndexBusinessRemote, Serializable
 {
+	// Enum used to indicate type of browsing we're doing
+	private enum BrowseType {
+		CREATOR, SUBJECT, LOCATION, TYPE
+	}
+	
 	/**
 	 * GUID for implementing Serializable.
 	 */
@@ -72,15 +87,17 @@ public class IndexBusiness implements IndexBusinessLocal, IndexBusinessRemote, S
 	private static Logger log = Logger.getLogger(IndexBusiness.class);
 	
 	// Get the entity manager
-	@PersistenceContext(unitName = "BiblioteQPersistenceUnit")
+	@PersistenceContext(unitName = "BiblioteQPersistenceUnit", type = PersistenceContextType.EXTENDED)
 	private EntityManager em;
 	
 	// Declare variables we'll be using
+	private BrowseType browseType;
 	private long recordsTotal = 0;
 	private long recordsReturned = 0;
 	private long recordsReturnedFromBatch = 0;
 	private int batchSize = 100;
 	Query resultsQuery;
+	Query browseQuery;
 	
 	// List of entities to be indexed. These must be EXACT, as they will be used to query the database.
 	private String[] itemsToIndex = new String[] { "Book", "CD", "DVD", "Journal", "Magazine", "VideoGame" };
@@ -90,6 +107,229 @@ public class IndexBusiness implements IndexBusinessLocal, IndexBusinessRemote, S
 	
 	// Index of the current Entity being indexed
 	int currentEntity = 0;
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.biblioteq.ejb.interfaces.IndexBusinessLocal#addOrUpdateCreatorIndex(java.lang.String)
+	 */
+	@Override
+	public void addOrUpdateCreatorIndex(String indexTerm)
+	{
+		// Declare the variables we'll be using
+		CreatorIndexItem item = null;
+		
+		//@formatter:off
+		TypedQuery<CreatorIndexItem> q = this.em.createQuery(
+					"SELECT c " +
+					"FROM CreatorIndexItem c " +
+					"WHERE " +
+						"c.term = :term",
+					CreatorIndexItem.class
+				);
+		//@formatter:on
+		
+		// Add the parameter
+		q.setParameter("term", indexTerm);
+		
+		// Get the result
+		try
+		{
+			// We got a result!
+			item = q.getSingleResult();
+			
+			// Since we have a result, just increment its count
+			item.setTotal(item.getTotal() + 1);
+			
+			// And update it
+			this.em.merge(item);
+		}
+		catch (NonUniqueResultException e)
+		{
+			IndexBusiness.log.error("More than one entry was found for the Creator Index Term [" + indexTerm + "].");
+			e.printStackTrace();
+		}
+		catch (NoResultException e)
+		{
+			// No result was found, so create an entry for this term
+			item = new CreatorIndexItem(indexTerm, 1);
+			
+			// Add the new item to the database
+			this.em.merge(item);
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.biblioteq.ejb.interfaces.IndexBusinessLocal#addOrUpdateSubjectIndex(java.lang.String)
+	 */
+	@Override
+	public void addOrUpdateSubjectIndex(String indexTerm)
+	{
+		// Declare the variables we'll be using
+		SubjectIndexItem item = null;
+		
+		//@formatter:off
+		TypedQuery<SubjectIndexItem> q = this.em.createQuery(
+					"SELECT s " +
+					"FROM SubjectIndexItem s " +
+					"WHERE " +
+						"s.term = :term",
+					SubjectIndexItem.class
+				);
+		//@formatter:on
+		
+		// Add the parameter
+		q.setParameter("term", indexTerm);
+		
+		// Get the result
+		try
+		{
+			// We got a result!
+			item = q.getSingleResult();
+			
+			// Since we have a result, just increment its count
+			item.setTotal(item.getTotal() + 1);
+			
+			// And update it
+			this.em.merge(item);
+		}
+		catch (NonUniqueResultException e)
+		{
+			IndexBusiness.log.error("More than one entry was found for the Subject Index Term [" + indexTerm + "].");
+			e.printStackTrace();
+		}
+		catch (NoResultException e)
+		{
+			// No result was found, so create an entry for this term
+			item = new SubjectIndexItem(indexTerm, 1);
+			
+			// Add the new item to the database
+			this.em.merge(item);
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.biblioteq.ejb.interfaces.IndexBusinessLocal#clearCreatorIndex()
+	 */
+	@Override
+	public void clearCreatorIndex()
+	{
+		Query q = this.em.createQuery("DELETE FROM CreatorIndexItem");
+		q.executeUpdate();
+		this.em.flush();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.biblioteq.ejb.interfaces.IndexBusinessLocal#clearSubjectIndex()
+	 */
+	@Override
+	public void clearSubjectIndex()
+	{
+		Query q = this.em.createQuery("DELETE FROM SubjectIndexItem");
+		q.executeUpdate();
+		this.em.flush();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.biblioteq.ejb.interfaces.IndexBusinessLocal#getBrowseResults(long, long)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public ArrayList<BrowseItem> getBrowseResults(int startIndex, int length)
+	{
+		ArrayList<BrowseItem> returnVal = new ArrayList<BrowseItem>();
+		Query locationCountQuery = null;
+		Long locationCountResult = new Long(0);
+		
+		// If we're browsing the subjects
+		if (this.browseType == BrowseType.SUBJECT)
+		{
+			this.browseQuery.setFirstResult(startIndex);
+			this.browseQuery.setMaxResults(length);
+			
+			for (SubjectIndexItem nextRecord : (List<SubjectIndexItem>) this.browseQuery.getResultList())
+			{
+				returnVal.add(new BrowseItem(nextRecord.getTerm(), nextRecord.getTotal()));
+			}
+		}
+		
+		// If we're browsing by creators
+		if (this.browseType == BrowseType.CREATOR)
+		{
+			this.browseQuery.setFirstResult(startIndex);
+			this.browseQuery.setMaxResults(length);
+			
+			for (CreatorIndexItem nextRecord : (List<CreatorIndexItem>) this.browseQuery.getResultList())
+			{
+				returnVal.add(new BrowseItem(nextRecord.getTerm(), nextRecord.getTotal()));
+			}
+		}
+		
+		// If we're browsing by locations
+		if (this.browseType == BrowseType.LOCATION)
+		{
+			this.browseQuery.setFirstResult(startIndex);
+			this.browseQuery.setMaxResults(length);
+			
+			/*
+			 * We have 2 steps here:
+			 * 1. We must get the locations. Our query is already prepared to do that.
+			 * 2. We must get the number of items in each location. This is dependent upon the type of items a location stores.
+			 * We will need to create another query for this.
+			 */
+			
+			for (Location nextRecord : (List<Location>) this.browseQuery.getResultList())
+			{
+				//@formatter:off
+				locationCountQuery = this.em.createQuery(
+						"SELECT COUNT(*) " +
+						"FROM " + nextRecord.getLocationPk().getType() + " t " +
+						"WHERE t.location = '" + nextRecord.getLocationPk().getLocation() + "'"
+				);
+				//@formatter:on
+				
+				// Get the result
+				locationCountResult = (Long) locationCountQuery.getSingleResult();
+				
+				// Only return a location if we have any items for that location
+				if (locationCountResult > 0)
+				{
+					// Add a BrowseItem to the list
+					returnVal.add(new BrowseItem(nextRecord.getLocationPk().getLocation(), locationCountResult, nextRecord.getLocationPk()
+					        .getType()));
+				}
+			}
+		}
+		
+		// If we're browsing by type
+		if (this.browseType == BrowseType.TYPE)
+		{
+			/*
+			 * We have 2 steps here:
+			 * 1. We must get the types. This is already done because we maintain a list of them in a String array in this file.
+			 * 2. We must get the number of items for each type. This is also already done because this EJB retrieves that information upon activation.
+			 */
+			for (int i = startIndex; i < this.itemsToIndex.length && i < length; i++)
+			{
+				// Only return an item type if we have any of that item
+				if (this.itemsCount[i] > 0)
+				{
+					returnVal.add(new BrowseItem(this.itemsToIndex[i], this.itemsCount[i]));
+				}
+			}
+		}
+		
+		// Return our result list
+		return returnVal;
+	}
 	
 	/*
 	 * (non-Javadoc)
@@ -173,12 +413,122 @@ public class IndexBusiness implements IndexBusinessLocal, IndexBusinessRemote, S
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see org.biblioteq.ejb.interfaces.IndexBusinessLocal#getTotalCreators()
+	 */
+	@Override
+	public long getTotalCreators()
+	{
+		//@formatter:off
+		TypedQuery<Long> q = this.em.createQuery(
+				"SELECT COUNT(*) FROM CreatorIndexItem",
+				Long.class
+		);
+		//@formatter:on
+		
+		return q.getSingleResult().longValue();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.biblioteq.ejb.interfaces.IndexBusinessLocal#getTotalLocations()
+	 */
+	@Override
+	public long getTotalLocations()
+	{
+		//@formatter:off
+		TypedQuery<Long> q = this.em.createQuery(
+				"SELECT COUNT(*) FROM Location",
+				Long.class
+		);
+		//@formatter:on
+		
+		return q.getSingleResult().longValue();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.biblioteq.ejb.interfaces.IndexBusinessLocal#getTotalNonEmptyLocations()
+	 */
+	@Override
+	public long getTotalNonEmptyLocations()
+	{
+		long returnVal = 0;
+		
+		/*
+		 * There are 2 Steps:
+		 * 1. Get a list of the locations
+		 * 2. Execute a query on each item type for a count of items
+		 * assigned that location. Count the locations that have items.
+		 */
+		//@formatter:off
+		TypedQuery<Location> q = this.em.createQuery(
+				"SELECT l " +
+				"FROM Location l",
+				Location.class
+		);
+		//@formatter:on
+		
+		TypedQuery<Long> countQuery;
+		for (Location nextLoc : q.getResultList())
+		{
+			//@formatter:off
+			countQuery = this.em.createQuery(
+					"SELECT COUNT(*)" +
+					"FROM " + nextLoc.getLocationPk().getType() + " t " +
+					"WHERE t.location = '" + nextLoc.getLocationPk().getLocation() + "'",
+					Long.class
+			);
+			//@formatter:on
+			
+			if (countQuery.getSingleResult().longValue() > 0)
+			{
+				returnVal++;
+			}
+		}
+		
+		return returnVal;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.biblioteq.ejb.interfaces.IndexBusinessLocal#getTotalRecords()
 	 */
 	@Override
 	public long getTotalRecords()
 	{
 		return this.recordsTotal;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.biblioteq.ejb.interfaces.IndexBusinessLocal#getTotalSubjects()
+	 */
+	@Override
+	public long getTotalSubjects()
+	{
+		//@formatter:off
+		TypedQuery<Long> q = this.em.createQuery(
+				"SELECT COUNT(*) FROM SubjectIndexItem",
+				Long.class
+		);
+		//@formatter:on
+		
+		return q.getSingleResult().longValue();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.biblioteq.ejb.interfaces.IndexBusinessLocal#getTotalTypes()
+	 */
+	@Override
+	public int getTotalTypes()
+	{
+		return this.itemsToIndex.length;
 	}
 	
 	/**
@@ -217,7 +567,10 @@ public class IndexBusiness implements IndexBusinessLocal, IndexBusinessRemote, S
 			}
 		}
 		
-		IndexBusiness.log.info("Total items [" + this.recordsTotal + "].");
+		/*
+		 * Prepare the browsing query.
+		 */
+		this.setBrowseQueryBySubject();
 	}
 	
 	/*
@@ -230,5 +583,83 @@ public class IndexBusiness implements IndexBusinessLocal, IndexBusinessRemote, S
 	public void reset()
 	{
 		IndexBusiness.log.info("IndexBusiness EJB removed.");
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.biblioteq.ejb.interfaces.IndexBusinessLocal#setBrowseQueryByCreator()
+	 */
+	@Override
+	public void setBrowseQueryByCreator()
+	{
+		// Set the enum
+		this.browseType = BrowseType.CREATOR;
+		
+		// Build the query
+		//@formatter:off
+		this.browseQuery = this.em.createQuery(
+				"SELECT c " +
+				"FROM CreatorIndexItem c " +
+				"ORDER BY " +
+					"c.term"
+		);
+		//@formatter:on
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.biblioteq.ejb.interfaces.IndexBusinessLocal#setBrowseQueryByLocation()
+	 */
+	@Override
+	public void setBrowseQueryByLocation()
+	{
+		// Set the enum
+		this.browseType = BrowseType.LOCATION;
+		
+		// Build the query
+		//@formatter:off
+		this.browseQuery = this.em.createQuery(
+				"SELECT l " +
+				"FROM Location l " +
+				"ORDER BY " +
+					"l.locationPk.location"
+		);
+		//@formatter:on
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.biblioteq.ejb.interfaces.IndexBusinessLocal#setBrowseQueryBySubject()
+	 */
+	@Override
+	public void setBrowseQueryBySubject()
+	{
+		// Set the enum
+		this.browseType = BrowseType.SUBJECT;
+		
+		// Build the query
+		//@formatter:off
+		this.browseQuery = this.em.createQuery(
+				"SELECT s " +
+				"FROM SubjectIndexItem s " +
+				"ORDER BY " +
+					"s.term"
+		);
+		//@formatter:on
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.biblioteq.ejb.interfaces.IndexBusinessLocal#setBrowseQueryByType()
+	 */
+	@Override
+	public void setBrowseQueryByType()
+	{
+		// Set the enum
+		this.browseType = BrowseType.TYPE;
 	}
 }

@@ -24,17 +24,22 @@
  * #######################
  * #      Revision       #
  * ####################### 
- * Jun 7, 2012, Clinton Bush, 1.0.0,
+ * Jun 07, 2012, Clinton Bush, 1.0.0,
  *    New file.
+ * Aug 03, 2012, Clinton Bush, 1.1.2,
+ *    Added methods to support indexing creators and subjects, and for supporting browsing.
  * 
  ********************************************************************************************************************************************************************************** 
  */
 //@formatter:on
 package org.biblioteq.ejb.interfaces;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Local;
+
+import org.biblioteq.ejb.model.BrowseItem;
 
 /**
  * Local interface for IndexBusiness EJB.
@@ -45,6 +50,43 @@ import javax.ejb.Local;
 @Local
 public interface IndexBusinessLocal
 {
+	/**
+	 * If the term is already in the index, this increments the total count. If it is not in the index, it is added with a total count of 1.
+	 * 
+	 * @param indexTerm
+	 *            (String) The term to index.
+	 */
+	public abstract void addOrUpdateCreatorIndex(String indexTerm);
+	
+	/**
+	 * If the term is already in the index, this increments the total count. If it is not in the index, it is added with a total count of 1.
+	 * 
+	 * @param indexTerm
+	 *            (String) The term to index.
+	 */
+	public abstract void addOrUpdateSubjectIndex(String indexTerm);
+	
+	/**
+	 * Deletes all entries from the creator_index table.
+	 */
+	public abstract void clearCreatorIndex();
+	
+	/**
+	 * Deletes all entries from the subject_index table.
+	 */
+	public abstract void clearSubjectIndex();
+	
+	/**
+	 * Returns an ArrayList of BrowseItems containing the results of a query specified by the type of browsing the user is conducting.
+	 * 
+	 * @param startIndex
+	 *            (int) The index to begin retrieving results from.
+	 * @param length
+	 *            (int) The number of results to get.
+	 * @return (ArrayList<BrowseItem>) Query results.
+	 */
+	public abstract ArrayList<BrowseItem> getBrowseResults(int startIndex, int length);
+	
 	/**
 	 * Returns the next batch of records to be indexed.
 	 * 
@@ -60,6 +102,27 @@ public interface IndexBusinessLocal
 	public abstract long getReturnedRecords();
 	
 	/**
+	 * Returns the total count of creators indexed.
+	 * 
+	 * @return (long) Count of creators.
+	 */
+	public abstract long getTotalCreators();
+	
+	/**
+	 * Returns the total count of locations indexed.
+	 * 
+	 * @return (long) Count of locations.
+	 */
+	public abstract long getTotalLocations();
+	
+	/**
+	 * Returns the total count of locations that have items assigned to them.
+	 * 
+	 * @return (long) Count of locations that actually have items assigned to them.
+	 */
+	public abstract long getTotalNonEmptyLocations();
+	
+	/**
 	 * Returns the total number of records to be indexed.
 	 * 
 	 * @return (long) The count of all records to be indexed.
@@ -67,7 +130,41 @@ public interface IndexBusinessLocal
 	public abstract long getTotalRecords();
 	
 	/**
+	 * Returns the total count of subjects indexed.
+	 * 
+	 * @return (long) Count of subjects.
+	 */
+	public abstract long getTotalSubjects();
+	
+	/**
+	 * Returns the total count of item types.
+	 * 
+	 * @return (int) Count of item types.
+	 */
+	public abstract int getTotalTypes();
+	
+	/**
 	 * Resets/Removes the IndexBusiness Stateful EJB.
 	 */
 	public abstract void reset();
+	
+	/**
+	 * Creates a new query to retrieve and paginate results shown while a user is browsing by Creator.
+	 */
+	public abstract void setBrowseQueryByCreator();
+	
+	/**
+	 * Creates a new query to retrieve and paginate results shown while a user is browsing by Location.
+	 */
+	public abstract void setBrowseQueryByLocation();
+	
+	/**
+	 * Creates a new query to retrieve and paginate results shown while a user is browsing by Subject.
+	 */
+	public abstract void setBrowseQueryBySubject();
+	
+	/**
+	 * Creates a new query to retrieve and paginate results shown while a user is browsing by Type.
+	 */
+	public abstract void setBrowseQueryByType();
 }

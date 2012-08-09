@@ -25,9 +25,12 @@
  * #######################
  * #      Revision       #
  * ####################### 
- * Jun 8, 2012, Clinton Bush, 1.0.0,
+ * Jun 08, 2012, Clinton Bush, 1.0.0,
  *    New file.
- * 
+ * Aug 05, 2012, Clinton Bush, 1.1.2,
+ *    Added a new field, SEARCH_DOCUMENT_FIELD_LOCATION, to be indexed so we can filter search results by location. 
+ *    Implemented indexing for locations and creators to be used when browsing.
+ *    
  ********************************************************************************************************************************************************************************** 
  */
 //@formatter:on
@@ -36,6 +39,8 @@ package org.biblioteq.web.threads;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -119,6 +124,9 @@ public class Indexer implements Runnable
 	public void run()
 	{
 		// Declare the variables we'll be using
+		Pattern subjectPattern = Pattern.compile("^([^.\\r\\n]+)[.]?$", Pattern.MULTILINE);
+		Pattern creatorPattern = Pattern.compile("^([^\\r\\n]+)$", Pattern.MULTILINE);
+		Matcher matcher = null;
 		int batchCount = 0;
 		this.recordsIndexed = 0;
 		
@@ -177,6 +185,10 @@ public class Indexer implements Runnable
 			e.printStackTrace();
 		}
 		
+		// Clear the Creator and Subject index tables in the DB
+		this.indexEjb.clearCreatorIndex();
+		this.indexEjb.clearSubjectIndex();
+		
 		// Cycle through the batches to perform indexing
 		List<Item> nextBatch = null;
 		while ((nextBatch = this.indexEjb.getNextBatch()) != null)
@@ -189,6 +201,7 @@ public class Indexer implements Runnable
 				// Create a new Index document
 				Document newDocument = new Document();
 				
+				newDocument.add(new Field(Constants.SEARCH_DOCUMENT_FIELD_LOCATION, nextItem.getLocation(), Store.YES, Index.NOT_ANALYZED));
 				newDocument.add(new Field(Constants.SEARCH_DOCUMENT_FIELD_TYPE, nextItem.getType(), Store.YES, Index.NOT_ANALYZED));
 				newDocument.add(new Field(Constants.SEARCH_DOCUMENT_FIELD_ID, nextItem.getId(), Store.YES, Index.NOT_ANALYZED));
 				newDocument.add(new Field(Constants.SEARCH_DOCUMENT_FIELD_OID, String.valueOf(nextItem.getItemId()), Store.YES, Index.NO));
@@ -225,6 +238,19 @@ public class Indexer implements Runnable
 					e.printStackTrace();
 				}
 				
+				// Parse and Index the Subject and Creator
+				matcher = creatorPattern.matcher(nextItem.getCreator());
+				while (matcher.find())
+				{
+					this.indexEjb.addOrUpdateCreatorIndex(matcher.group(1));
+				}
+				
+				matcher = subjectPattern.matcher(nextItem.getCategories());
+				while (matcher.find())
+				{
+					this.indexEjb.addOrUpdateSubjectIndex(matcher.group(1));
+				}
+				
 				// Increment the records indexed count
 				this.recordsIndexed++;
 				this.indexerCallback.updateProgress(this.recordsIndexed);
@@ -256,7 +282,6 @@ public class Indexer implements Runnable
 		// Now that we're done, close the index writer
 		try
 		{
-			Indexer.log.info("Indexing complete...");
 			this.indexWriter.commit();
 			this.indexWriter.close(true);
 			this.indexDirectory.close();

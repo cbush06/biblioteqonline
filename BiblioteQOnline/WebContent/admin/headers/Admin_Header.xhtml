@@ -24,9 +24,11 @@
  * #######################
  * #      Revision       #
  * ####################### 
- * Apr 3, 2012, Clinton Bush, 1.0.0,
+ * Apr 03, 2012, Clinton Bush, 1.0.0,
  *    New file.
- * 
+ * Aug 08, 2012, Clinton Bush, 1.1.2,
+ *    Adjusted the header image to load either the default or custom header depending on the system settings.
+ *
  ********************************************************************************************************************************************************************************** 
  *
 -->
@@ -39,7 +41,7 @@
 	<h:head></h:head> 
 	<h:body> 
 		<ui:composition>
-			<div id="header_logo"></div>
+			<div id="header_logo" style="background-image: url('../#{Page_Backing.headerImageFilePath}');"></div>
 			<div id="header_search">
 				
 			</div>

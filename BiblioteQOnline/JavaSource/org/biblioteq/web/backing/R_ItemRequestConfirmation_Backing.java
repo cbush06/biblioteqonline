@@ -26,11 +26,15 @@
  * ####################### 
  * Jun 30, 2012, Clinton Bush, 1.0.0,
  *    New file.
- * 
+ * Aug 08, 2012, Clinton Bush, 1.1.2,
+ *    Implemented Serializable.
+ *    
  ********************************************************************************************************************************************************************************** 
  */
 //@formatter:on
 package org.biblioteq.web.backing;
+
+import java.io.Serializable;
 
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -51,8 +55,13 @@ import org.biblioteq.web.common.Constants;
  */
 @ManagedBean(name = "R_ItemRequestConfirmation_Backing")
 @ViewScoped
-public class R_ItemRequestConfirmation_Backing
+public class R_ItemRequestConfirmation_Backing implements Serializable
 {
+	/**
+	 * GUID for implementing Serializable.
+	 */
+	private static final long serialVersionUID = 4878900129434064926L;
+	
 	/**
 	 * Get the logger.
 	 */

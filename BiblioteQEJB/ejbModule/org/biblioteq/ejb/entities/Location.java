@@ -3,9 +3,9 @@
  * #######################
  * #   FILE DESCRIPTOR   #
  * #######################
- * Application: BiblioteQOnline
- * Package: org.biblioteq.web.backing
- * File: Searcher.java
+ * Application: BiblioteQEJB
+ * Package: org.biblioteq.ejb.entities
+ * File: Location.java
  * 
  * #######################
  * #   GNU DISCLAIMER    #
@@ -19,32 +19,69 @@
  * #######################
  * #       Purpose       #
  * #######################
- *
+ * Represents a location in the library.
  *
  * #######################
  * #      Revision       #
  * ####################### 
- * Jun 9, 2012, Clinton Bush, 1.0.0,
+ * Aug 03, 2012, Clinton Bush, 1.0.0,
  *    New file.
  * 
  ********************************************************************************************************************************************************************************** 
  */
 //@formatter:on
-package org.biblioteq.web.backing;
+package org.biblioteq.ejb.entities;
+
+import java.io.Serializable;
+
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import org.apache.log4j.Logger;
 
 /**
+ * Represents a location in the library.
+ * 
  * @author Clint Bush
- *
+ * 
  */
-public class Searcher
+@Entity(name = "Location")
+@Table(name = "locations")
+public class Location implements Serializable
 {
+	/**
+	 * Logger for this class.
+	 */
+	private static Logger log = Logger.getLogger(Location.class);
 	
 	/**
-	 * 
+	 * GUID for implementing Serializable.
 	 */
-	public Searcher()
+	private static final long serialVersionUID = -1380395345696037719L;
+	
+	@EmbeddedId
+	private LocationPK locationPk;
+	
+	/**
+	 * Returns a reference to the Composite Primary Key.
+	 * 
+	 * @return the locationPk
+	 */
+	public LocationPK getLocationPk()
 	{
-		// TODO Auto-generated constructor stub
+		return this.locationPk;
+	}
+	
+	/**
+	 * Sets the Composite Primary Key.
+	 * 
+	 * @param locationPk
+	 *            the locationPk to set
+	 */
+	public void setLocationPk(LocationPK locationPk)
+	{
+		this.locationPk = locationPk;
 	}
 	
 }

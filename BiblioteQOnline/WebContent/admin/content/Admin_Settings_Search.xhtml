@@ -24,9 +24,10 @@
  * #######################
  * #      Revision       #
  * ####################### 
- * June 2, 2012, Clinton Bush, 1.0.0,
+ * Jun 02, 2012, Clinton Bush, 1.0.0,
  *    New file.
- * 
+ * Aug 08, 2012, Clinton Bush, 1.1.2,
+ *    Added the browse settings.
  ********************************************************************************************************************************************************************************** 
  *
 -->
@@ -57,7 +58,7 @@
 			</div>
 			<div class="subContentBox" style="text-align: left;">
 				<!-- RESULTS -->
-				<h:outputText value="Results" styleClass="settingSection" />
+				<h:outputText value="Search Results" styleClass="settingSection" />
 				<h:panelGrid columns="2" width="400" cellpadding="1" cellspacing="0" style="margin-bottom: 10px;" columnClasses="settingLeftColumn, settingRightColumn">
 					<h:outputText value="Results Per Page" styleClass="settingLabel" />
 					<h:inputText id="txtResultsPerPage" size="20" style="text-align: right;" value="#{A_Settings_Search_Backing.resultsPerPage}">
@@ -69,6 +70,15 @@
 						<f:selectItem itemLabel="Yes" itemValue="true"/>
 						<f:selectItem itemLabel="No" itemValue="false" />
 					</h:selectOneRadio>
+				</h:panelGrid>
+				
+				<!-- BROWSE RESULTS -->
+				<h:outputText value="Browse Results" styleClass="settingSection" />
+				<h:panelGrid columns="2" width="400" cellpadding="1" cellspacing="0" style="margin-bottom: 10px;" columnClasses="settingLeftColumn, settingRightColumn">
+					<h:outputText value="Results Per Page" styleClass="settingLabel" />
+					<h:inputText id="txtBrowseResultsPerPage" size="20" style="text-align: right;" value="#{A_Settings_Search_Backing.browseResultsPerPage}">
+						<f:validator validatorId="IntegerValidator" />
+					</h:inputText>
 				</h:panelGrid>
 				
 				<!-- SECURITY -->

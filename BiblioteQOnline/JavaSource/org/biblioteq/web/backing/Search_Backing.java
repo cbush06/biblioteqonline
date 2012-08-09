@@ -24,9 +24,11 @@
  * #######################
  * #      Revision       #
  * ####################### 
- * Jun 9, 2012, Clinton Bush, 1.0.0,
+ * Jun 09, 2012, Clinton Bush, 1.0.0,
  *    New file.
- * 
+ * Aug 08, 2012, Clinton Bush, 1.1.2,
+ *    Implemented Serializable.
+ *    
  ********************************************************************************************************************************************************************************** 
  */
 //@formatter:on
@@ -34,6 +36,7 @@ package org.biblioteq.web.backing;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +69,9 @@ import org.biblioteq.ejb.interfaces.Item;
 import org.biblioteq.ejb.interfaces.ItemBusinessLocal;
 import org.biblioteq.ejb.interfaces.SettingBusinessLocal;
 import org.biblioteq.web.common.Constants;
+import org.biblioteq.web.model.AdvancedSearch_Model;
+import org.biblioteq.web.model.AdvancedSearch_Model.QueryType;
+import org.biblioteq.web.model.SearchTerm;
 import org.biblioteq.web.model.ValidationMessage_Model;
 
 /**
@@ -76,7 +82,7 @@ import org.biblioteq.web.model.ValidationMessage_Model;
  */
 @ManagedBean(name = "Search_Backing")
 @SessionScoped
-public class Search_Backing
+public class Search_Backing implements Serializable
 {
 	/**
 	 * Use this as a data model for the page numbers at the bottom of the page.
@@ -104,7 +110,27 @@ public class Search_Backing
 		{
 			return this.value;
 		}
+	};
+	
+	/**
+	 * Enum that allows the type of search performed to be specified.
+	 * 
+	 * @author Clint Bush
+	 * 
+	 */
+	public static enum SimpleOrAdvanced {
+		SIMPLE, ADVANCED
 	}
+	
+	/**
+	 * Setting that controls which method of search is called by the autoSearch() method.
+	 */
+	private SimpleOrAdvanced simpleOrAdvanced = Search_Backing.SimpleOrAdvanced.SIMPLE;
+	
+	/**
+	 * GUID for implementing Serializable.
+	 */
+	private static final long serialVersionUID = 2910878598880251716L;
 	
 	/**
 	 * Get the logger.
@@ -145,9 +171,15 @@ public class Search_Backing
 	private String searchType = "";
 	
 	/**
+	 * Advanced Search Query
+	 */
+	private AdvancedSearch_Model advancedQueryModel = null;
+	
+	/**
 	 * Query entered in the Simple Search textbox.
 	 */
 	private String simpleSearchQuery = "";
+	
 	private String originalSimpleSearchQuery = "";
 	
 	/**
@@ -165,25 +197,24 @@ public class Search_Backing
 	 */
 	private QueryParser queryParser = null;
 	private Query query = null;
+	
 	private File indexDirectoryFile;
+	
 	private Directory indexDirectory = null;
+	
 	private IndexReader indexReader = null;
 	private IndexSearcher indexSearcher = null;
 	private int totalHits = 0;
 	private int resultsPerPage = 0;
-	
 	private String[] fieldsToSearch;
-	
 	/**
 	 * Use this to improve Pagination of results.
 	 */
 	private ScoreDoc searchAfter = null;
-	
 	/**
 	 * Current page of results selected to be shown.
 	 */
 	private int resultsPage = 1;
-	
 	/**
 	 * Indicates if the type icon should be shown with the search results.
 	 */
@@ -227,12 +258,192 @@ public class Search_Backing
 	 * 
 	 * @return (String) The navigation rule for JSF to follow.
 	 */
-	public String advancedSearch()
+	public void advancedSearch()
 	{
+		// Ensure that an Indexing is not taking place
+		if (this.settingEjb.getBooleanSettingByName(Constants.SETTING_SEARCH_INDEXING_COMMENCED))
+		{
+			this.errorMessages
+			        .addMessage("We're sorry. The Search Engine is re-indexing the database right now. Please try your search again in 1 - 2 minutes. Thank you!");
+			this.errorMessages.renderMessages();
+			return;
+		}
+		
 		// Update the results per page setting
 		this.resultsPerPage = this.settingEjb.getIntegerSettingByName(Constants.SETTING_SEARCH_RESULTS_PER_PAGE);
 		
-		return "";
+		// Parse the Query
+		try
+		{
+			this.queryParser = new MultiFieldQueryParser(Version.LUCENE_36, this.fieldsToSearch, new StopAnalyzer(Version.LUCENE_36));
+			this.queryParser.setAllowLeadingWildcard(true);
+			
+			this.query = new BooleanQuery();
+			
+			for (SearchTerm s : this.advancedQueryModel.getSearchTerms())
+			{
+				BooleanClause.Occur requirement = BooleanClause.Occur.MUST;
+				
+				// Translate our Requirement into Lucene Requirement
+				switch (s.getRequirement())
+				{
+					case MUST:
+						requirement = BooleanClause.Occur.MUST;
+						break;
+					case MUST_NOT:
+						requirement = BooleanClause.Occur.MUST_NOT;
+						break;
+					case SHOULD:
+						requirement = BooleanClause.Occur.SHOULD;
+						break;
+				}
+				
+				if (s.getSearchField() == null || s.getSearchField().equals("")
+				        || s.getSearchField().equals(Constants.SEARCH_DOCUMENT_FIELD_ALL))
+				{
+					((BooleanQuery) this.query).add(this.queryParser.parse(s.getQuery()), requirement);
+				}
+				else
+				{
+					if (s.getQueryType() != QueryType.TERM_QUERY)
+					{
+						((BooleanQuery) this.query).add((new QueryParser(Version.LUCENE_36, s.getSearchField(), new StopAnalyzer(
+						        Version.LUCENE_36))).parse(s.getQuery()), requirement);
+					}
+					else
+					{
+						((BooleanQuery) this.query).add(new BooleanClause(new TermQuery(new Term(s.getSearchField(), s.getQuery())),
+						        requirement));
+					}
+					
+				}
+			}
+			
+			// If the user has specified a type filter
+			if (!(this.typeFilter.equals("All")))
+			{
+				((BooleanQuery) this.query).add(new BooleanClause(new TermQuery(new Term(Constants.SEARCH_DOCUMENT_FIELD_TYPE,
+				        this.typeFilter)), BooleanClause.Occur.MUST));
+			}
+		}
+		catch (Exception e)
+		{
+			Search_Backing.log.error("Exception occurred while trying to parse Simple Search query.");
+			this.errorMessages
+			        .addMessage("An error occurred as a result of your Search Query. Please ensure it is not blank and does not begin with a Wildcard Character (e.g. '*', '?', etc.).");
+			e.printStackTrace();
+			return;
+		}
+		
+		// Get a handle for the indexing directory
+		this.indexDirectoryFile = new File(File.separator + Constants.PATH_DIR_SEARCH_INDEX + File.separator);
+		
+		// If the directory doesn't exist (the index hasn't been built), stop here
+		if (!(this.indexDirectoryFile.exists()))
+		{
+			Search_Backing.log.error("Index Directory doesn't exist.");
+			return;
+		}
+		
+		// Prepare the Index Reader and Searcher; then, perform the search.
+		try
+		{
+			// Prepare the Reader and Searcher
+			this.indexDirectory = FSDirectory.open(this.indexDirectoryFile);
+			this.indexReader = IndexReader.open(this.indexDirectory);
+			this.indexSearcher = new IndexSearcher(this.indexReader);
+			
+			// Execute the search -- Get the 10 x RESULTS PER PAGE results.
+			TopDocs topDocs = this.indexSearcher.search(this.query, this.resultsPerPage);
+			this.totalHits = topDocs.totalHits;
+			ScoreDoc[] results = topDocs.scoreDocs;
+			
+			// Translate the score docs into Items to be added to the results list
+			this.searchResults.clear();
+			for (ScoreDoc doc : results)
+			{
+				this.searchResults.add(this.itemEjb.getItemById((this.indexSearcher.doc(doc.doc)).get(Constants.SEARCH_DOCUMENT_FIELD_ID),
+				        (this.indexSearcher.doc(doc.doc)).get(Constants.SEARCH_DOCUMENT_FIELD_TYPE)));
+			}
+			
+			// Save the last result to enable faster paging
+			if (results.length > 0)
+			{
+				this.searchAfter = results[results.length - 1];
+			}
+		}
+		catch (CorruptIndexException e)
+		{
+			Search_Backing.log.error("CorruptIndexException thrown while attempting to perform a Simple Search.");
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			Search_Backing.log.error("IOException thrown while attempting to perform a Simple Search.");
+			e.printStackTrace();
+		}
+		finally
+		{
+			if (this.indexSearcher != null)
+			{
+				try
+				{
+					this.indexSearcher.close();
+				}
+				catch (IOException e)
+				{
+					Search_Backing.log.error("Error closing IndexSearcher.");
+					e.printStackTrace();
+				}
+			}
+			if (this.indexReader != null)
+			{
+				try
+				{
+					this.indexReader.close();
+				}
+				catch (IOException e)
+				{
+					Search_Backing.log.error("Error closing IndexReader.");
+					e.printStackTrace();
+				}
+			}
+			if (this.indexDirectory != null)
+			{
+				try
+				{
+					this.indexDirectory.close();
+				}
+				catch (IOException e)
+				{
+					Search_Backing.log.error("Error closing Directory.");
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Perform the correct type of search depending on the simpleOrAdvanced setting.
+	 */
+	public void autoSearch()
+	{
+		// Reset properties that back the page
+		this.resultsPage = 1;
+		this.searchResults.clear();
+		
+		// If we are performing a Simple search
+		if (this.simpleOrAdvanced == Search_Backing.SimpleOrAdvanced.SIMPLE)
+		{
+			this.originalSimpleSearchQuery = this.simpleSearchQuery;
+			this.performSimpleSearch();
+		}
+		
+		// If we are performing an Advanced search
+		if (this.simpleOrAdvanced == Search_Backing.SimpleOrAdvanced.ADVANCED)
+		{
+			this.advancedSearch();
+		}
 	}
 	
 	/**
@@ -382,6 +593,16 @@ public class Search_Backing
 	}
 	
 	/**
+	 * Returns the currently set AdvancedSearch_Model object used to compile the advanced search query for Lucene.
+	 * 
+	 * @return (AdvancedSearch_Model) The advancedQueryModel.
+	 */
+	public AdvancedSearch_Model getAdvancedQueryModel()
+	{
+		return this.advancedQueryModel;
+	}
+	
+	/**
 	 * Returns the next page.
 	 * 
 	 * @return (int) The next results page.
@@ -497,6 +718,16 @@ public class Search_Backing
 	public Item getSelectedItem()
 	{
 		return this.selectedItem;
+	}
+	
+	/**
+	 * Returns the type of search performed when the autoSearch() method is called.
+	 * 
+	 * @return (SimpleOrAdvanced) The simpleOrAdvanced setting.
+	 */
+	public SimpleOrAdvanced getSimpleOrAdvanced()
+	{
+		return this.simpleOrAdvanced;
 	}
 	
 	/**
@@ -843,6 +1074,17 @@ public class Search_Backing
 	}
 	
 	/**
+	 * Sets the AdvancedSearch_Model object used to compile a query for Lucene.
+	 * 
+	 * @param advancedQueryModel
+	 *            (AdvancedSearch_Model) The advancedQueryModel to set.
+	 */
+	public void setAdvancedQueryModel(AdvancedSearch_Model advancedQueryModel)
+	{
+		this.advancedQueryModel = advancedQueryModel;
+	}
+	
+	/**
 	 * Allows the Page_Backing bean to be injected into this class.
 	 * 
 	 * @param pageBackingBean
@@ -888,6 +1130,17 @@ public class Search_Backing
 	}
 	
 	/**
+	 * Sets the type of search performed when the autoSearch() method is called.
+	 * 
+	 * @param simpleOrAdvanced
+	 *            (SimpleOrAdvanced) The simpleOrAdvanced setting.
+	 */
+	public void setSimpleOrAdvanced(SimpleOrAdvanced simpleOrAdvanced)
+	{
+		this.simpleOrAdvanced = simpleOrAdvanced;
+	}
+	
+	/**
 	 * Sets the value of the Simple Search textbox.
 	 * 
 	 * @param simpleSearchQuery
@@ -907,9 +1160,8 @@ public class Search_Backing
 	public void setTypeFilter(String typeFilter)
 	{
 		this.typeFilter = typeFilter;
-		this.resultsPage = 1;
 		this.simpleSearchQuery = this.originalSimpleSearchQuery;
-		this.performSimpleSearch();
+		this.autoSearch();
 		this.errorMessages.renderMessages();
 	}
 	
@@ -918,10 +1170,7 @@ public class Search_Backing
 	 */
 	public void simpleSearch()
 	{
-		// Reset properties that back the page
-		this.resultsPage = 1;
-		this.searchResults.clear();
-		this.originalSimpleSearchQuery = this.simpleSearchQuery;
-		this.performSimpleSearch();
+		this.setSimpleOrAdvanced(SimpleOrAdvanced.SIMPLE);
+		this.autoSearch();
 	}
 }
