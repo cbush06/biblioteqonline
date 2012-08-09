@@ -5,7 +5,7 @@
  * #######################
  * Application: BiblioteQOnline
  * Package: org.biblioteq.web.backing
- * File: R_Browse_Backing.java
+ * File: Browse_Backing.java
  * 
  * #######################
  * #   GNU DISCLAIMER    #
@@ -28,6 +28,9 @@
  *    New file.
  * Aug 08, 2012, Clinton Bush, 1.1.2,
  *    Implemented Serializable, added an initializer, and set it to ViewScoped.
+ * Aug 09, 2012, Clinton Bush, 1.1.2,
+ *    Renamed to Browse_Backing to indicate this file will be used by Restricted and Unrestricted sections of the site (like the Search_Backing bean).
+ *    Added controls to restrict it if Searching is disabled for unregistered users.
  *    
  ********************************************************************************************************************************************************************************** 
  */
@@ -61,9 +64,9 @@ import org.biblioteq.web.model.ValidationMessage_Model;
  * @author Clint Bush
  * 
  */
-@ManagedBean(name = "R_Browse_Backing")
+@ManagedBean(name = "Browse_Backing")
 @ViewScoped
-public class R_Browse_Backing implements Serializable
+public class Browse_Backing implements Serializable
 {
 	/**
 	 * Use this as a data model for the page numbers at the bottom of the page.
@@ -101,7 +104,7 @@ public class R_Browse_Backing implements Serializable
 	/**
 	 * Get the logger.
 	 */
-	private static Logger log = Logger.getLogger(R_Browse_Backing.class);
+	private static Logger log = Logger.getLogger(Browse_Backing.class);
 	
 	/**
 	 * Prepare a validation model for displaying Error Messages.
@@ -194,14 +197,57 @@ public class R_Browse_Backing implements Serializable
 	}
 	
 	/**
+	 * Conducts a search on the selected item for the unrestricted section of the web site.
+	 * 
+	 * @return (String) JSF navigation outcome that directs the user to the unrestricted search results page.
+	 */
+	public String conductUnRestrictedSearchForItem()
+	{
+		AdvancedSearch_Model query = new AdvancedSearch_Model();
+		
+		if (this.typeFilter.equals("Subject"))
+		{
+			query.addSearchTerm(Requirement.MUST, QueryType.CONTAIN, Constants.SEARCH_DOCUMENT_FIELD_CATEGORY,
+			        "\"" + this.selectedItem.getTerm() + "\"");
+		}
+		if (this.typeFilter.equals("Type"))
+		{
+			query.addSearchTerm(Requirement.MUST, QueryType.TERM_QUERY, Constants.SEARCH_DOCUMENT_FIELD_TYPE, this.selectedItem.getTerm());
+		}
+		if (this.typeFilter.equals("Creator"))
+		{
+			query.addSearchTerm(Requirement.MUST, QueryType.CONTAIN, Constants.SEARCH_DOCUMENT_FIELD_CREATOR,
+			        "\"" + this.selectedItem.getTerm() + "\"");
+		}
+		if (this.typeFilter.equals("Location"))
+		{
+			query.addSearchTerm(Requirement.MUST, QueryType.TERM_QUERY, Constants.SEARCH_DOCUMENT_FIELD_LOCATION,
+			        this.selectedItem.getTerm());
+			query.addSearchTerm(Requirement.MUST, QueryType.TERM_QUERY, Constants.SEARCH_DOCUMENT_FIELD_TYPE, this.selectedItem.getType());
+		}
+		
+		// Set the AdvancedSearch_Model on the Search Backing Bean
+		this.searchBackingBean.setAdvancedQueryModel(query);
+		this.searchBackingBean.setSimpleOrAdvanced(SimpleOrAdvanced.ADVANCED);
+		this.searchBackingBean.setSearchType("all");
+		this.searchBackingBean.autoSearch();
+		
+		return "search";
+	}
+	
+	/**
 	 * Loads the next set of results into the resultsList.
 	 * 
 	 * @param e
 	 */
 	public void getNextResultSet(ActionEvent e)
 	{
-		// Clear the current set of results
-		this.setResultsList(this.indexEjb.getBrowseResults(((this.resultsPage - 1) * this.resultsPerPage), this.resultsPerPage));
+		if ((this.pageBackingBean.getCurrentUser() != null && this.pageBackingBean.getCurrentUser().isActive())
+		        || this.settingEjb.getBooleanSettingByName(Constants.SETTING_SEARCH_ALLOW_NON_USERS))
+		{
+			// Clear the current set of results
+			this.setResultsList(this.indexEjb.getBrowseResults(((this.resultsPage - 1) * this.resultsPerPage), this.resultsPerPage));
+		}
 	}
 	
 	/**
@@ -213,39 +259,41 @@ public class R_Browse_Backing implements Serializable
 	{
 		ArrayList<PageNumber> returnVal = new ArrayList<PageNumber>();
 		
-		// Ensure there are some
-		
-		// The page to stop at
-		long endingPage = this.totalHits / this.resultsPerPage;
-		if ((this.totalHits % this.resultsPerPage) > 0)
+		if ((this.pageBackingBean.getCurrentUser() != null && this.pageBackingBean.getCurrentUser().isActive())
+		        || this.settingEjb.getBooleanSettingByName(Constants.SETTING_SEARCH_ALLOW_NON_USERS))
 		{
-			endingPage++;
-		}
-		
-		// If we are past the number 6, we need to begin scrolling the result list with the current page
-		if (this.resultsPage > 6)
-		{
-			if (endingPage > this.resultsPage + 4)
+			// The page to stop at
+			long endingPage = this.totalHits / this.resultsPerPage;
+			if ((this.totalHits % this.resultsPerPage) > 0)
 			{
-				endingPage = this.resultsPage + 4;
+				endingPage++;
 			}
 			
-			for (int i = this.resultsPage - 5; i <= endingPage; i++)
+			// If we are past the number 6, we need to begin scrolling the result list with the current page
+			if (this.resultsPage > 6)
 			{
-				returnVal.add(new PageNumber(String.valueOf(i), i));
+				if (endingPage > this.resultsPage + 4)
+				{
+					endingPage = this.resultsPage + 4;
+				}
+				
+				for (int i = this.resultsPage - 5; i <= endingPage; i++)
+				{
+					returnVal.add(new PageNumber(String.valueOf(i), i));
+				}
 			}
-		}
-		// If we are at or below page 6, we just show page numbers 1 - 10
-		else
-		{
-			if (endingPage > 10)
+			// If we are at or below page 6, we just show page numbers 1 - 10
+			else
 			{
-				endingPage = 10;
-			}
-			
-			for (int i = 1; i <= endingPage; i++)
-			{
-				returnVal.add(new PageNumber(String.valueOf(i), i));
+				if (endingPage > 10)
+				{
+					endingPage = 10;
+				}
+				
+				for (int i = 1; i <= endingPage; i++)
+				{
+					returnVal.add(new PageNumber(String.valueOf(i), i));
+				}
 			}
 		}
 		
@@ -318,9 +366,13 @@ public class R_Browse_Backing implements Serializable
 	@PostConstruct
 	public void init()
 	{
-		this.resultsPerPage = this.settingEjb.getIntegerSettingByName(Constants.SETTING_SEARCH_BROWSE_PER_PAGE);
-		this.totalHits = this.indexEjb.getTotalSubjects();
-		this.setResultsList(this.indexEjb.getBrowseResults(((this.resultsPage - 1) * this.resultsPerPage), this.resultsPerPage));
+		if ((this.pageBackingBean.getCurrentUser() != null && this.pageBackingBean.getCurrentUser().isActive())
+		        || this.settingEjb.getBooleanSettingByName(Constants.SETTING_SEARCH_ALLOW_NON_USERS))
+		{
+			this.resultsPerPage = this.settingEjb.getIntegerSettingByName(Constants.SETTING_SEARCH_BROWSE_PER_PAGE);
+			this.totalHits = this.indexEjb.getTotalSubjects();
+			this.setResultsList(this.indexEjb.getBrowseResults(((this.resultsPage - 1) * this.resultsPerPage), this.resultsPerPage));
+		}
 	}
 	
 	/**
@@ -408,35 +460,39 @@ public class R_Browse_Backing implements Serializable
 	 */
 	public void setTypeFilter(String typeFilter)
 	{
-		this.typeFilter = typeFilter;
-		this.resultsPage = 1;
-		
-		// If we're browsing by subject
-		if (this.typeFilter.equals("Subject"))
+		if ((this.pageBackingBean.getCurrentUser() != null && this.pageBackingBean.getCurrentUser().isActive())
+		        || this.settingEjb.getBooleanSettingByName(Constants.SETTING_SEARCH_ALLOW_NON_USERS))
 		{
-			this.indexEjb.setBrowseQueryBySubject();
-			this.totalHits = this.indexEjb.getTotalSubjects();
-		}
-		
-		// If we're browsing by type
-		if (this.typeFilter.equals("Type"))
-		{
-			this.indexEjb.setBrowseQueryByType();
-			this.totalHits = this.indexEjb.getTotalTypes();
-		}
-		
-		// If we're browsing by Creator
-		if (this.typeFilter.equals("Creator"))
-		{
-			this.indexEjb.setBrowseQueryByCreator();
-			this.totalHits = this.indexEjb.getTotalCreators();
-		}
-		
-		// If we're browsing by Location
-		if (this.typeFilter.equals("Location"))
-		{
-			this.indexEjb.setBrowseQueryByLocation();
-			this.totalHits = this.indexEjb.getTotalNonEmptyLocations();
+			this.typeFilter = typeFilter;
+			this.resultsPage = 1;
+			
+			// If we're browsing by subject
+			if (this.typeFilter.equals("Subject"))
+			{
+				this.indexEjb.setBrowseQueryBySubject();
+				this.totalHits = this.indexEjb.getTotalSubjects();
+			}
+			
+			// If we're browsing by type
+			if (this.typeFilter.equals("Type"))
+			{
+				this.indexEjb.setBrowseQueryByType();
+				this.totalHits = this.indexEjb.getTotalTypes();
+			}
+			
+			// If we're browsing by Creator
+			if (this.typeFilter.equals("Creator"))
+			{
+				this.indexEjb.setBrowseQueryByCreator();
+				this.totalHits = this.indexEjb.getTotalCreators();
+			}
+			
+			// If we're browsing by Location
+			if (this.typeFilter.equals("Location"))
+			{
+				this.indexEjb.setBrowseQueryByLocation();
+				this.totalHits = this.indexEjb.getTotalNonEmptyLocations();
+			}
 		}
 	}
 }

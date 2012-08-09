@@ -72,22 +72,7 @@
 		</ui:define>
 		<ui:param name="title" value="#{Page_Backing.renderPageTitle}"></ui:param>
 		<ui:define name="nav_area">
-			<div class="nav_item">
-				<div class="nav_item_content">
-					<div class="nav_item_content_text">
-						<img src="../imgs/keys24.png" align="top"/><h:commandLink action="logout" value="Log in" immediate="true"/>
-					</div>
-				</div>
-				<div class="nav_item_right_border"></div>
-			</div>
-			<div class="nav_item">
-				<div class="nav_item_content">
-					<div class="nav_item_content_text_selected">
-						<img src="../imgs/sign-up24.png" align="top"/><h:commandLink action="register" value="Register" immediate="true"/>
-					</div>
-				</div>
-				<div class="nav_item_right_border"></div>
-			</div>
+			<ui:include src="/unrestricted/navigation/Unrestricted_Main_Navigation.xhtml" />
 		</ui:define>
 		<ui:define name="content_area">
 			<style type="text/css">

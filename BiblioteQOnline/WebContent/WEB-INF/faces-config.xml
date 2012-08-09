@@ -17,12 +17,22 @@
 			<to-view-id>/unrestricted/searchresults.xhtml</to-view-id>
 			<redirect/>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>browse</from-outcome>
+			<to-view-id>/unrestricted/browseresults.xhtml</to-view-id>
+			<redirect/>
+		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>/unrestricted/register.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>search</from-outcome>
 			<to-view-id>/unrestricted/searchresults.xhtml</to-view-id>
+			<redirect/>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>browse</from-outcome>
+			<to-view-id>/unrestricted/browseresults.xhtml</to-view-id>
 			<redirect/>
 		</navigation-case>
 	</navigation-rule>
@@ -38,12 +48,35 @@
 			<to-view-id>/unrestricted/itemdetails.xhtml</to-view-id>
 			<redirect/>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>browse</from-outcome>
+			<to-view-id>/unrestricted/browseresults.xhtml</to-view-id>
+			<redirect/>
+		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>/unrestricted/itemdetails.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>search</from-outcome>
 			<to-view-id>/unrestricted/searchresults.xhtml</to-view-id>
+			<redirect/>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>browse</from-outcome>
+			<to-view-id>/unrestricted/browseresults.xhtml</to-view-id>
+			<redirect/>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/unrestricted/browseresults.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>search</from-outcome>
+			<to-view-id>/unrestricted/searchresults.xhtml</to-view-id>
+			<redirect/>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>browse</from-outcome>
+			<to-view-id>/unrestricted/browseresults.xhtml</to-view-id>
 			<redirect/>
 		</navigation-case>
 	</navigation-rule>

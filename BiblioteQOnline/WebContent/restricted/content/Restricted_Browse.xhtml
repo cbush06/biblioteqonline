@@ -46,7 +46,7 @@
 				Browse
 			</div>
 			<div class="sectionOther">
-				About #{R_Browse_Backing.totalHits} results
+				About #{Browse_Backing.totalHits} results
 			</div>
 		</div>
 		<table>
@@ -56,17 +56,17 @@
 				</td>
 				<td valign="top">
 					<div class="subContentBox">
-						<ui:repeat value="#{R_Browse_Backing.resultsList}" var="item">
+						<ui:repeat value="#{Browse_Backing.resultsList}" var="item">
 							<div class="resultTableDiv">
 								<table class="resultTable">
 									<tr>
 										<td style="text-align: left;">
-											<h:commandLink  action="#{R_Browse_Backing.conductSearchForItem}">
-												<f:setPropertyActionListener target="#{R_Browse_Backing.selectedItem}" value="#{item}" />
-												<h:panelGroup rendered="#{R_Browse_Backing.typeFilter != 'Location'}">
+											<h:commandLink  action="#{Browse_Backing.conductSearchForItem}">
+												<f:setPropertyActionListener target="#{Browse_Backing.selectedItem}" value="#{item}" />
+												<h:panelGroup rendered="#{Browse_Backing.typeFilter != 'Location'}">
 													#{item.term}
 												</h:panelGroup>
-												<h:panelGroup rendered="#{R_Browse_Backing.typeFilter == 'Location'}">
+												<h:panelGroup rendered="#{Browse_Backing.typeFilter == 'Location'}">
 													#{item.term} (#{item.type})
 												</h:panelGroup>
 											</h:commandLink>
@@ -86,12 +86,12 @@
 						<div class="resultPaginationDiv">
 							<table class="resultPaginationTable" align="center">
 								<tr>
-									<ui:repeat value="#{R_Browse_Backing.pageNumbers}" var="pageNum">
+									<ui:repeat value="#{Browse_Backing.pageNumbers}" var="pageNum">
 										<td>
-											<a4j:commandLink execute="@all" render="@all" styleClass="#{(R_Browse_Backing.resultsPage == pageNum.value)? 'selected' : ''}">
+											<a4j:commandLink execute="@all" render="@all" styleClass="#{(Browse_Backing.resultsPage == pageNum.value)? 'selected' : ''}">
 												<h:outputText value="#{pageNum.display}" />
-												<a4j:param assignTo="#{R_Browse_Backing.resultsPage}" value="#{pageNum.value}"/>
-												<a4j:actionListener listener="#{R_Browse_Backing.getNextResultSet}" />
+												<a4j:param assignTo="#{Browse_Backing.resultsPage}" value="#{pageNum.value}"/>
+												<a4j:actionListener listener="#{Browse_Backing.getNextResultSet}" />
 											</a4j:commandLink>
 										</td>
 									</ui:repeat>

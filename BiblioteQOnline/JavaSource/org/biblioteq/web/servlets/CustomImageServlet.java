@@ -104,7 +104,7 @@ public class CustomImageServlet extends HttpServlet
 				String fileName = m.group(2);
 				File customImage = new File(File.separator + Constants.PATH_CUSTOM_IMAGES + File.separator + fileName);
 				int imageLength = 0;
-				CustomImageServlet.log.info(customImage.getCanonicalPath());
+				
 				if (customImage.exists())
 				{
 					// The image was found, so create a file name

@@ -10,6 +10,9 @@
    <PROCESS-ITEM-OUTPUT ID="search::#unrestricted#searchresults.xhtml"
     NAME="output" PATH="/unrestricted/searchresults.xhtml"
     TARGET="rules:#unrestricted#searchresults.xhtml" TITLE="search" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT ID="browse::#unrestricted#browseresults.xhtml"
+    NAME="output2" PATH="/unrestricted/browseresults.xhtml"
+    TARGET="rules:#unrestricted#browseresults.xhtml" TITLE="browse" model-entity="JSFProcessItemOutput"/>
   </PROCESS-ITEM>
  </PROCESS-ITEM>
  <PROCESS-ITEM NAME="rules:*" PATH="*" SHAPE="32,129,0,0" model-entity="JSFProcessGroup">
@@ -56,6 +59,9 @@
     ID="itemdetails::#unrestricted#itemdetails.xhtml" NAME="output1"
     PATH="/unrestricted/itemdetails.xhtml"
     TARGET="rules:#unrestricted#itemdetails.xhtml" TITLE="itemdetails" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT ID="browse::#unrestricted#browseresults.xhtml"
+    NAME="output2" PATH="/unrestricted/browseresults.xhtml"
+    TARGET="rules:#unrestricted#browseresults.xhtml" TITLE="browse" model-entity="JSFProcessItemOutput"/>
   </PROCESS-ITEM>
  </PROCESS-ITEM>
  <PROCESS-ITEM NAME="rules:#unrestricted#itemdetails.xhtml"
@@ -65,6 +71,9 @@
    <PROCESS-ITEM-OUTPUT ID="search::#unrestricted#searchresults.xhtml"
     NAME="output" PATH="/unrestricted/searchresults.xhtml"
     TARGET="rules:#unrestricted#searchresults.xhtml" TITLE="search" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT ID="browse::#unrestricted#browseresults.xhtml"
+    NAME="output1" PATH="/unrestricted/browseresults.xhtml"
+    TARGET="rules:#unrestricted#browseresults.xhtml" TITLE="browse" model-entity="JSFProcessItemOutput"/>
   </PROCESS-ITEM>
  </PROCESS-ITEM>
  <PROCESS-ITEM NAME="rules:#unrestricted#register.xhtml"
@@ -74,6 +83,21 @@
    <PROCESS-ITEM-OUTPUT ID="search::#unrestricted#searchresults.xhtml"
     NAME="output" PATH="/unrestricted/searchresults.xhtml"
     TARGET="rules:#unrestricted#searchresults.xhtml" TITLE="search" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT ID="browse::#unrestricted#browseresults.xhtml"
+    NAME="output1" PATH="/unrestricted/browseresults.xhtml"
+    TARGET="rules:#unrestricted#browseresults.xhtml" TITLE="browse" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#unrestricted#browseresults.xhtml"
+  PATH="/unrestricted/browseresults.xhtml" SHAPE="32,817,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules:#unrestricted#browseresults.xhtml:0"
+   NAME="item" PATH="/unrestricted/browseresults.xhtml" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="search::#unrestricted#searchresults.xhtml"
+    NAME="output" PATH="/unrestricted/searchresults.xhtml"
+    TARGET="rules:#unrestricted#searchresults.xhtml" TITLE="search" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT ID="browse::#unrestricted#browseresults.xhtml"
+    NAME="output1" PATH="/unrestricted/browseresults.xhtml"
+    TARGET="rules:#unrestricted#browseresults.xhtml" TITLE="browse" model-entity="JSFProcessItemOutput"/>
   </PROCESS-ITEM>
  </PROCESS-ITEM>
 </PROCESS>
