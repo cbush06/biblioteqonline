@@ -30,6 +30,11 @@
  * Aug 05, 2012, Clinton Bush, 1.1.2,
  *    Added a new field, SEARCH_DOCUMENT_FIELD_LOCATION, to be indexed so we can filter search results by location. 
  *    Implemented indexing for locations and creators to be used when browsing.
+ * Jun 12, 2014, Clinton Bush, 1.1.2,
+ *    Greatly enhanced the speed of the Indexing process by adding two additional fields to the Lucene Document used
+ *    which stores a non-analyzed copy of Creators and Categories. These fields were then used to generate the database
+ *    entries used for the Browse by Category and Browse by Creator pages. This is much faster than the approach used
+ *    originally.
  *    
  ********************************************************************************************************************************************************************************** 
  */
