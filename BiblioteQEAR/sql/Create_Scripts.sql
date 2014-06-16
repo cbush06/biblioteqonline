@@ -104,3 +104,5 @@ INSERT INTO online_setting (name, value) VALUES('search_browse_per_page', '10');
 INSERT INTO online_setting (name, value) VALUES('system_title', 'BiblioteQ Online');
 INSERT INTO online_setting (name, value) VALUES('system_custom_header', 'false');
 INSERT INTO online_setting (name, value) VALUES('system_header_type', 'jpg');
+CREATE INDEX creator_term_index ON creator_index (term);
+CREATE INDEX subject_term_index ON subject_index (term);

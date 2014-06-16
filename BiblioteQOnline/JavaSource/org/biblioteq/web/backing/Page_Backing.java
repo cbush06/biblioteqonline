@@ -398,6 +398,15 @@ public class Page_Backing extends Screen_Backing implements Serializable
 	 */
 	public String gotoRestrictedBrowse()
 	{
+		// Ensure that an Indexing is not taking place
+		if (this.settingEjb.getBooleanSettingByName(Constants.SETTING_SEARCH_INDEXING_COMMENCED))
+		{
+			this.errorMsg
+			        .addMessage("We're sorry. The Search Engine is re-indexing the database right now. Please try again in 1 - 2 minutes. Thank you!");
+			this.errorMsg.renderMessages();
+			return "";
+		}
+		
 		this.setRenderPage(Constants.PAGE_RESTRICTED_BROWSE);
 		return "update";
 	}

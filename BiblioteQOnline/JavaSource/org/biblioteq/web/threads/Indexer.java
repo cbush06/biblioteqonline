@@ -39,8 +39,6 @@ package org.biblioteq.web.threads;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -52,8 +50,10 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.TermEnum;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
@@ -89,6 +89,7 @@ public class Indexer implements Runnable
 	File indexDirectoryFile = null;
 	Directory indexDirectory = null;
 	IndexWriter indexWriter = null;
+	IndexReader indexReader = null;
 	
 	// IndexerCallback object (usually the object using this class)
 	IndexerCallback indexerCallback;
@@ -124,9 +125,6 @@ public class Indexer implements Runnable
 	public void run()
 	{
 		// Declare the variables we'll be using
-		Pattern subjectPattern = Pattern.compile("^([^.\\r\\n]+)[.]?$", Pattern.MULTILINE);
-		Pattern creatorPattern = Pattern.compile("^([^\\r\\n]+)$", Pattern.MULTILINE);
-		Matcher matcher = null;
 		int batchCount = 0;
 		this.recordsIndexed = 0;
 		
@@ -153,6 +151,8 @@ public class Indexer implements Runnable
 			Indexer.log.error("Interrupt occurred while sleeping.");
 			e.printStackTrace();
 		}
+		
+		long timenow = System.currentTimeMillis();
 		
 		// Prepare the Index Directory and Index Writer
 		try
@@ -208,11 +208,29 @@ public class Indexer implements Runnable
 				newDocument.add(new Field(Constants.SEARCH_DOCUMENT_FIELD_TITLE, nextItem.getTitle(), Store.NO, Index.ANALYZED));
 				newDocument.add(new Field(Constants.SEARCH_DOCUMENT_FIELD_CREATOR, nextItem.getCreator(), Store.NO, Index.ANALYZED));
 				
-				// Give Category field a slightly lower score so Title holds more weight
-				Field categoryField = new Field(Constants.SEARCH_DOCUMENT_FIELD_CATEGORY, nextItem.getCategories(), Store.NO,
-				        Index.ANALYZED);
+				// Manually add terms for Creator Unanalyzed
+				for(String nextCreator : nextItem.getCreator().split("\n")) 
+				{
+					if(nextCreator.trim().length() > 0) 
+					{
+						newDocument.add(new Field(Constants.SEARCH_DOCUMENT_FIELD_CREATOR_UNANALYZED, nextCreator.trim(), Store.NO, Index.NOT_ANALYZED));
+					}
+				}
+				
+				
+				Field categoryField = new Field(Constants.SEARCH_DOCUMENT_FIELD_CATEGORY, nextItem.getCategories(), Store.NO, Index.ANALYZED);
 				categoryField.setBoost(0.9f);
 				newDocument.add(categoryField);
+				
+				// Manually add terms for Category
+				for(String nextCategory : nextItem.getCategories().split("\n")) 
+				{
+					if(nextCategory.trim().length() > 0) 
+					{
+						// Give Category field a slightly lower score so Title holds more weight
+						newDocument.add(new Field(Constants.SEARCH_DOCUMENT_FIELD_CATEGORY_UNANALYZED, nextCategory.trim(), Store.YES, Index.NOT_ANALYZED));
+					}
+				}
 				
 				newDocument.add(new Field(Constants.SEARCH_DOCUMENT_FIELD_PUBLISHER, nextItem.getCompany(), Store.NO, Index.ANALYZED));
 				
@@ -238,39 +256,15 @@ public class Indexer implements Runnable
 					e.printStackTrace();
 				}
 				
-				// Parse and Index the Subject and Creator
-				matcher = creatorPattern.matcher(nextItem.getCreator());
-				while (matcher.find())
-				{
-					this.indexEjb.addOrUpdateCreatorIndex(matcher.group(1));
-				}
-				
-				matcher = subjectPattern.matcher(nextItem.getCategories());
-				while (matcher.find())
-				{
-					this.indexEjb.addOrUpdateSubjectIndex(matcher.group(1));
-				}
-				
 				// Increment the records indexed count
 				this.recordsIndexed++;
 				this.indexerCallback.updateProgress(this.recordsIndexed);
-				
-				// All the page time to update
-				try
-				{
-					Thread.sleep(10);
-				}
-				catch (InterruptedException e)
-				{
-					Indexer.log.error("Interruption occurred while indexing.");
-					e.printStackTrace();
-				}
 			}
 			
 			// Pause to allow other processes time
 			try
 			{
-				Thread.sleep(10);
+				Thread.sleep(5);
 			}
 			catch (InterruptedException e)
 			{
@@ -279,12 +273,13 @@ public class Indexer implements Runnable
 			}
 		}
 		
+		Indexer.log.info("Time Indexing: " + String.valueOf(System.currentTimeMillis() - timenow));
+		
 		// Now that we're done, close the index writer
 		try
 		{
 			this.indexWriter.commit();
 			this.indexWriter.close(true);
-			this.indexDirectory.close();
 		}
 		catch (CorruptIndexException e)
 		{
@@ -297,6 +292,55 @@ public class Indexer implements Runnable
 			e.printStackTrace();
 		}
 		
+		// Open an Index Reader
+		try
+		{
+			this.indexReader = IndexReader.open(this.indexDirectory);
+		}
+		catch (CorruptIndexException e)
+		{
+			Indexer.log.error("Corrupt Index while trying to open an IndexReader.");
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			Indexer.log.error("IOException while trying to open an IndexReader.");
+			e.printStackTrace();
+		}
+		
+		// Cycle through each Category term and insert it into the database
+		TermEnum termEnumerator;
+		try {
+			termEnumerator = indexReader.terms();
+			while(termEnumerator.next()) {
+				if(termEnumerator.term().field().equals(Constants.SEARCH_DOCUMENT_FIELD_CREATOR_UNANALYZED)) 
+				{
+					this.indexEjb.addOrUpdateCreatorIndex(termEnumerator.term().text(), termEnumerator.docFreq());
+					continue;
+				}
+				
+				if(termEnumerator.term().field().equals(Constants.SEARCH_DOCUMENT_FIELD_CATEGORY_UNANALYZED)) 
+				{
+					this.indexEjb.addOrUpdateSubjectIndex(termEnumerator.term().text(), termEnumerator.docFreq());
+					continue;
+				}
+			}
+		} catch (IOException e) {
+			Indexer.log.error("An Exception was encountered while trying to insert the Creator and Subject indexed terms into the database.");
+			e.printStackTrace();
+		}
+		
+		// Close the Index Reader and Index Directory
+		try
+		{
+			this.indexReader.close();
+			this.indexDirectory.close();
+		}
+		catch(IOException e)
+		{
+			Indexer.log.error("IOException while trying to close the Index Directory.");
+			e.printStackTrace();
+		}
 		// Notify the object using this class that indexing is complete
 		this.indexerCallback.indexingComplete();
 	}

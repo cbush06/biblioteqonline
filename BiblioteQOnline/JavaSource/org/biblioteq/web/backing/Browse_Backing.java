@@ -165,8 +165,7 @@ public class Browse_Backing implements Serializable
 		
 		if (this.typeFilter.equals("Subject"))
 		{
-			query.addSearchTerm(Requirement.MUST, QueryType.CONTAIN, Constants.SEARCH_DOCUMENT_FIELD_CATEGORY,
-			        "\"" + this.selectedItem.getTerm() + "\"");
+			query.addSearchTerm(Requirement.MUST, QueryType.CONTAIN, Constants.SEARCH_DOCUMENT_FIELD_CATEGORY, this.selectedItem.getTerm());
 		}
 		if (this.typeFilter.equals("Type"))
 		{
@@ -174,8 +173,7 @@ public class Browse_Backing implements Serializable
 		}
 		if (this.typeFilter.equals("Creator"))
 		{
-			query.addSearchTerm(Requirement.MUST, QueryType.CONTAIN, Constants.SEARCH_DOCUMENT_FIELD_CREATOR,
-			        "\"" + this.selectedItem.getTerm() + "\"");
+			query.addSearchTerm(Requirement.MUST, QueryType.CONTAIN, Constants.SEARCH_DOCUMENT_FIELD_CREATOR, this.selectedItem.getTerm());
 		}
 		if (this.typeFilter.equals("Location"))
 		{
@@ -242,6 +240,15 @@ public class Browse_Backing implements Serializable
 	 */
 	public void getNextResultSet(ActionEvent e)
 	{
+		// Ensure that an Indexing is not taking place
+		if (this.settingEjb.getBooleanSettingByName(Constants.SETTING_SEARCH_INDEXING_COMMENCED))
+		{
+			this.errorMessages
+			        .addMessage("We're sorry. The Search Engine is re-indexing the database right now. Please try again in 1 - 2 minutes. Thank you!");
+			this.errorMessages.renderMessages();
+			return;
+		}
+		
 		if ((this.pageBackingBean.getCurrentUser() != null && this.pageBackingBean.getCurrentUser().isActive())
 		        || this.settingEjb.getBooleanSettingByName(Constants.SETTING_SEARCH_ALLOW_NON_USERS))
 		{
@@ -259,8 +266,9 @@ public class Browse_Backing implements Serializable
 	{
 		ArrayList<PageNumber> returnVal = new ArrayList<PageNumber>();
 		
-		if ((this.pageBackingBean.getCurrentUser() != null && this.pageBackingBean.getCurrentUser().isActive())
-		        || this.settingEjb.getBooleanSettingByName(Constants.SETTING_SEARCH_ALLOW_NON_USERS))
+		if (((this.pageBackingBean.getCurrentUser() != null && this.pageBackingBean.getCurrentUser().isActive()) || this.settingEjb
+		        .getBooleanSettingByName(Constants.SETTING_SEARCH_ALLOW_NON_USERS))
+		        && !(this.settingEjb.getBooleanSettingByName(Constants.SETTING_SEARCH_INDEXING_COMMENCED)))
 		{
 			// The page to stop at
 			long endingPage = this.totalHits / this.resultsPerPage;
@@ -361,18 +369,31 @@ public class Browse_Backing implements Serializable
 	}
 	
 	/**
-	 * Handle initialization tasks like getting the results per page setting, loading the first results page, etc.
+	 * Perform preliminary steps to initializing the bean.
 	 */
 	@PostConstruct
 	public void init()
 	{
-		if ((this.pageBackingBean.getCurrentUser() != null && this.pageBackingBean.getCurrentUser().isActive())
-		        || this.settingEjb.getBooleanSettingByName(Constants.SETTING_SEARCH_ALLOW_NON_USERS))
+		if (((this.pageBackingBean.getCurrentUser() != null && this.pageBackingBean.getCurrentUser().isActive()) || this.settingEjb
+		        .getBooleanSettingByName(Constants.SETTING_SEARCH_ALLOW_NON_USERS))
+		        && !(this.settingEjb.getBooleanSettingByName(Constants.SETTING_SEARCH_INDEXING_COMMENCED)))
 		{
 			this.resultsPerPage = this.settingEjb.getIntegerSettingByName(Constants.SETTING_SEARCH_BROWSE_PER_PAGE);
 			this.totalHits = this.indexEjb.getTotalSubjects();
 			this.setResultsList(this.indexEjb.getBrowseResults(((this.resultsPage - 1) * this.resultsPerPage), this.resultsPerPage));
 		}
+	}
+	
+	/**
+	 * Returns a boolean indicating whether the Search box should be shown on an unrestricted page.
+	 * 
+	 * @return (boolean) True if it should be shown, false, otherwise.
+	 */
+	public boolean isBrowseShown()
+	{
+		return ((this.pageBackingBean.getCurrentUser() != null) || (this.settingEjb
+		        .getBooleanSettingByName(Constants.SETTING_SEARCH_ALLOW_NON_USERS)))
+		        && !(this.settingEjb.getBooleanSettingByName(Constants.SETTING_SEARCH_INDEXING_COMMENCED));
 	}
 	
 	/**
@@ -463,6 +484,12 @@ public class Browse_Backing implements Serializable
 		if ((this.pageBackingBean.getCurrentUser() != null && this.pageBackingBean.getCurrentUser().isActive())
 		        || this.settingEjb.getBooleanSettingByName(Constants.SETTING_SEARCH_ALLOW_NON_USERS))
 		{
+			// Ensure that an Indexing is not taking place
+			if (this.settingEjb.getBooleanSettingByName(Constants.SETTING_SEARCH_INDEXING_COMMENCED))
+			{
+				return;
+			}
+			
 			this.typeFilter = typeFilter;
 			this.resultsPage = 1;
 			

@@ -53,14 +53,16 @@
 			</div>
 			
 			<!--  Nav Item :: Browse -->
-			<div class="nav_item">
-				<div class="nav_item_content">
-					<div class="#{(Page_Backing.renderPage == 'Restricted_Browse')?'nav_item_content_text_selected':'nav_item_content_text'}">
-						<img src="../imgs/file-explorer24.png" align="top"/> <h:commandLink value="Browse" action="#{Page_Backing.gotoRestrictedBrowse}" />
+			<h:panelGroup rendered="#{Browse_Backing.browseShown}">
+				<div class="nav_item">
+					<div class="nav_item_content">
+						<div class="#{(Page_Backing.renderPage == 'Restricted_Browse')?'nav_item_content_text_selected':'nav_item_content_text'}">
+							<img src="../imgs/file-explorer24.png" align="top"/> <h:commandLink value="Browse" action="#{Page_Backing.gotoRestrictedBrowse}" />
+						</div>
 					</div>
+					<div class="nav_item_right_border"></div>
 				</div>
-				<div class="nav_item_right_border"></div>
-			</div>
+			</h:panelGroup>
 			
 			<!-- Nav Item :: My Account -->
 			<div class="nav_item">

@@ -98,7 +98,6 @@ public class CustomImageServlet extends HttpServlet
 			
 			if (m.find(0))
 			{
-				byte[] frontCover = null;
 				FileInputStream input = null;
 				String fileType = null;
 				String fileName = m.group(2);

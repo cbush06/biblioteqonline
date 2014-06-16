@@ -55,16 +55,20 @@ public interface IndexBusinessLocal
 	 * 
 	 * @param indexTerm
 	 *            (String) The term to index.
+	 * @param count
+	 *            (int) The count of times this term exists.
 	 */
-	public abstract void addOrUpdateCreatorIndex(String indexTerm);
+	public abstract void addOrUpdateCreatorIndex(String indexTerm, int count);
 	
 	/**
 	 * If the term is already in the index, this increments the total count. If it is not in the index, it is added with a total count of 1.
 	 * 
 	 * @param indexTerm
 	 *            (String) The term to index.
+	 * @param count
+	 *            (int) The count of times this term exists.
 	 */
-	public abstract void addOrUpdateSubjectIndex(String indexTerm);
+	public abstract void addOrUpdateSubjectIndex(String indexTerm, int count);
 	
 	/**
 	 * Deletes all entries from the creator_index table.

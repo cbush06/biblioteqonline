@@ -307,8 +307,8 @@ public class Search_Backing implements Serializable
 				{
 					if (s.getQueryType() != QueryType.TERM_QUERY)
 					{
-						((BooleanQuery) this.query).add((new QueryParser(Version.LUCENE_36, s.getSearchField(), new StopAnalyzer(
-						        Version.LUCENE_36))).parse(s.getQuery()), requirement);
+							((BooleanQuery) this.query).add((new QueryParser(Version.LUCENE_36, s.getSearchField(), new StopAnalyzer(
+							        Version.LUCENE_36))).parse(s.getQuery()), requirement);
 					}
 					else
 					{
@@ -879,7 +879,8 @@ public class Search_Backing implements Serializable
 	public boolean isSearchShown()
 	{
 		return ((this.pageBackingBean.getCurrentUser() != null) || (this.settingEjb
-		        .getBooleanSettingByName(Constants.SETTING_SEARCH_ALLOW_NON_USERS)));
+		        .getBooleanSettingByName(Constants.SETTING_SEARCH_ALLOW_NON_USERS)))
+		        && !(this.settingEjb.getBooleanSettingByName(Constants.SETTING_SEARCH_INDEXING_COMMENCED));
 	}
 	
 	/**

@@ -132,7 +132,9 @@ public class Constants
 	public static String SEARCH_DOCUMENT_FIELD_OID = "oid";
 	public static String SEARCH_DOCUMENT_FIELD_TITLE = "title";
 	public static String SEARCH_DOCUMENT_FIELD_CREATOR = "creator";
+	public static String SEARCH_DOCUMENT_FIELD_CREATOR_UNANALYZED = "creator_unanalyzed";
 	public static String SEARCH_DOCUMENT_FIELD_CATEGORY = "category";
+	public static String SEARCH_DOCUMENT_FIELD_CATEGORY_UNANALYZED = "category_unanalyzed";
 	public static String SEARCH_DOCUMENT_FIELD_PUBLISHER = "publisher";
 	public static String SEARCH_DOCUMENT_FIELD_DESCRIPTION = "description";
 	public static String SEARCH_DOCUMENT_FIELD_LOCATION = "location";

@@ -96,8 +96,10 @@ public class IndexBusiness implements IndexBusinessLocal, IndexBusinessRemote, S
 	private long recordsReturned = 0;
 	private long recordsReturnedFromBatch = 0;
 	private int batchSize = 100;
-	Query resultsQuery;
-	Query browseQuery;
+	private Query resultsQuery;
+	private Query browseQuery;
+	private TypedQuery<CreatorIndexItem> addOrUpdateCreatorQuery;
+	private TypedQuery<SubjectIndexItem> addOrUpdateSubjectQuery;
 	
 	// List of entities to be indexed. These must be EXACT, as they will be used to query the database.
 	private String[] itemsToIndex = new String[] { "Book", "CD", "DVD", "Journal", "Magazine", "VideoGame" };
@@ -114,32 +116,22 @@ public class IndexBusiness implements IndexBusinessLocal, IndexBusinessRemote, S
 	 * @see org.biblioteq.ejb.interfaces.IndexBusinessLocal#addOrUpdateCreatorIndex(java.lang.String)
 	 */
 	@Override
-	public void addOrUpdateCreatorIndex(String indexTerm)
+	public void addOrUpdateCreatorIndex(String indexTerm, int count)
 	{
 		// Declare the variables we'll be using
 		CreatorIndexItem item = null;
 		
-		//@formatter:off
-		TypedQuery<CreatorIndexItem> q = this.em.createQuery(
-					"SELECT c " +
-					"FROM CreatorIndexItem c " +
-					"WHERE " +
-						"c.term = :term",
-					CreatorIndexItem.class
-				);
-		//@formatter:on
-		
 		// Add the parameter
-		q.setParameter("term", indexTerm);
+		this.addOrUpdateCreatorQuery.setParameter("term", indexTerm.toLowerCase());
 		
 		// Get the result
 		try
 		{
 			// We got a result!
-			item = q.getSingleResult();
+			item = this.addOrUpdateCreatorQuery.getSingleResult();
 			
 			// Since we have a result, just increment its count
-			item.setTotal(item.getTotal() + 1);
+			item.setTotal(count);
 			
 			// And update it
 			this.em.merge(item);
@@ -152,7 +144,7 @@ public class IndexBusiness implements IndexBusinessLocal, IndexBusinessRemote, S
 		catch (NoResultException e)
 		{
 			// No result was found, so create an entry for this term
-			item = new CreatorIndexItem(indexTerm, 1);
+			item = new CreatorIndexItem(indexTerm.toLowerCase(), count);
 			
 			// Add the new item to the database
 			this.em.merge(item);
@@ -165,32 +157,22 @@ public class IndexBusiness implements IndexBusinessLocal, IndexBusinessRemote, S
 	 * @see org.biblioteq.ejb.interfaces.IndexBusinessLocal#addOrUpdateSubjectIndex(java.lang.String)
 	 */
 	@Override
-	public void addOrUpdateSubjectIndex(String indexTerm)
+	public void addOrUpdateSubjectIndex(String indexTerm, int count)
 	{
 		// Declare the variables we'll be using
 		SubjectIndexItem item = null;
 		
-		//@formatter:off
-		TypedQuery<SubjectIndexItem> q = this.em.createQuery(
-					"SELECT s " +
-					"FROM SubjectIndexItem s " +
-					"WHERE " +
-						"s.term = :term",
-					SubjectIndexItem.class
-				);
-		//@formatter:on
-		
 		// Add the parameter
-		q.setParameter("term", indexTerm);
+		this.addOrUpdateSubjectQuery.setParameter("term", indexTerm.toLowerCase());
 		
 		// Get the result
 		try
 		{
 			// We got a result!
-			item = q.getSingleResult();
+			item = this.addOrUpdateSubjectQuery.getSingleResult();
 			
 			// Since we have a result, just increment its count
-			item.setTotal(item.getTotal() + 1);
+			item.setTotal(count);
 			
 			// And update it
 			this.em.merge(item);
@@ -203,7 +185,7 @@ public class IndexBusiness implements IndexBusinessLocal, IndexBusinessRemote, S
 		catch (NoResultException e)
 		{
 			// No result was found, so create an entry for this term
-			item = new SubjectIndexItem(indexTerm, 1);
+			item = new SubjectIndexItem(indexTerm.toLowerCase(), count);
 			
 			// Add the new item to the database
 			this.em.merge(item);
@@ -347,6 +329,7 @@ public class IndexBusiness implements IndexBusinessLocal, IndexBusinessRemote, S
 		if (this.resultsQuery == null)
 		{
 			this.resultsQuery = this.em.createQuery("SELECT e FROM " + this.itemsToIndex[this.currentEntity] + " e", Item.class);
+			this.resultsQuery.setMaxResults(this.batchSize);
 		}
 		
 		// Have we finished the current batch?
@@ -528,7 +511,15 @@ public class IndexBusiness implements IndexBusinessLocal, IndexBusinessRemote, S
 	@Override
 	public int getTotalTypes()
 	{
-		return this.itemsToIndex.length;
+		int returnVal = 0;
+		for (int i = 0; i < this.itemsToIndex.length; i++)
+		{
+			if (this.itemsCount[i] > 0)
+			{
+				returnVal++;
+			}
+		}
+		return returnVal;
 	}
 	
 	/**
@@ -571,6 +562,29 @@ public class IndexBusiness implements IndexBusinessLocal, IndexBusinessRemote, S
 		 * Prepare the browsing query.
 		 */
 		this.setBrowseQueryBySubject();
+		
+		/*
+		 * Create queries
+		 */
+		//@formatter:off
+		this.addOrUpdateCreatorQuery = this.em.createQuery(
+			"SELECT c " +
+			"FROM CreatorIndexItem c " +
+			"WHERE " +
+				"c.term = :term",
+			CreatorIndexItem.class
+		);
+		//@formatter:on
+		
+		//@formatter:off
+		this.addOrUpdateSubjectQuery = this.em.createQuery(
+			"SELECT s " +
+			"FROM SubjectIndexItem s " +
+			"WHERE " +
+				"s.term = :term",
+			SubjectIndexItem.class
+		);
+		//@formatter:on
 	}
 	
 	/*
