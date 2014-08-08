@@ -207,22 +207,24 @@ public class AutoIndexer implements Runnable, IndexerCallback
 					return;
 				}
 				
-				// Wait 2 minutes before we check again
-				try
+			}
+			
+			// Wait 2 minutes before we check again
+			try
+			{
+				Thread.sleep(120000);
+			}
+			catch (InterruptedException e)
+			{
+				AutoIndexer.log.error("AutoIndexer received an Interrupt while waiting before checking on Indexing again.");
+				
+				// Check if this interrupt is to notify the thread to die
+				if (!(this.threadAlive))
 				{
-					Thread.sleep(120000);
-				}
-				catch (InterruptedException e)
-				{
-					AutoIndexer.log.error("AutoIndexer received an Interrupt while waiting before checking on Indexing again.");
-					
-					// Check if this interrupt is to notify the thread to die
-					if (!(this.threadAlive))
-					{
-						return;
-					}
+					return;
 				}
 			}
+			
 		}
 	}
 	
