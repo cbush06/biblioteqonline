@@ -94,7 +94,7 @@ public class IndexBusiness implements IndexBusinessLocal, IndexBusinessRemote, S
 	private BrowseType browseType;
 	private long recordsTotal = 0;
 	private long recordsReturned = 0;
-	private long recordsReturnedFromBatch = 0;
+	private int recordsReturnedFromBatch = 0;
 	private int batchSize = 100;
 	private Query resultsQuery;
 	private Query browseQuery;
@@ -336,6 +336,7 @@ public class IndexBusiness implements IndexBusinessLocal, IndexBusinessRemote, S
 		if (this.recordsReturnedFromBatch < this.itemsCount[this.currentEntity])
 		{
 			// Get the results
+			resultsQuery.setFirstResult(this.recordsReturnedFromBatch);
 			resultSet.addAll(this.resultsQuery.getResultList());
 			
 			// Update the counting variables
