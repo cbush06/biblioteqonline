@@ -121,7 +121,10 @@ public class AutoIndexer implements Runnable, IndexerCallback
 		String frequency = "";
 		long autoFreqInMilli = 0L;
 		long differenceInMilli = 0L;
-		
+
+		// Be sure the Indexer can be started
+		this.settingEjb.saveSetting(Constants.SETTING_SEARCH_INDEXING_COMMENCED, "false");
+				
 		// Run forever
 		while (true)
 		{
